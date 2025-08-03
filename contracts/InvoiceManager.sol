@@ -54,7 +54,7 @@ contract InvoiceManager is Ownable, ReentrancyGuard {
     event MilestoneReleased(uint256 indexed invoiceId, uint256 milestoneIndex, uint256 amount);
     event DisputeRaised(uint256 indexed invoiceId, address indexed raiser);
     
-    constructor() Ownable(msg.sender) {
+    constructor() {
         feeRecipient = msg.sender;
     }
     

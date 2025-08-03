@@ -61,13 +61,15 @@ export default function Invoices() {
   const [sortBy, setSortBy] = useState('newest');
   const [loading, setLoading] = useState(true);
 
-  // Get user's invoice IDs
-  const { data: userInvoiceIds, isError: userInvoicesError } = useContractRead({
+  // Get user's invoice IDs with refetch capability
+  const { data: userInvoiceIds, isError: userInvoicesError, refetch: refetchUserInvoices } = useContractRead({
     address: INVOICE_MANAGER_ADDRESS,
     abi: INVOICE_MANAGER_ABI,
     functionName: 'getUserInvoices',
     args: [address],
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS,
+    watch: true, // Watch for changes
+    cacheTime: 0, // Disable caching
   });
 
   // Prepare contract reads for individual invoices
@@ -78,15 +80,47 @@ export default function Invoices() {
     args: [invoiceId],
   }));
 
-  // Get invoice details
-  const { data: invoicesData, isLoading: invoicesLoading } = useContractReads({
+  // Get invoice details with refetch capability
+  const { data: invoicesData, isLoading: invoicesLoading, refetch: refetchInvoices } = useContractReads({
     contracts: invoiceReads,
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && (userInvoiceIds?.length > 0),
+    watch: true, // Watch for changes
+    cacheTime: 0, // Disable caching
   });
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Refetch data every 10 seconds to catch new invoices
+  useEffect(() => {
+    if (!isConnected || !address) return;
+    
+    const interval = setInterval(() => {
+      refetchUserInvoices?.();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [isConnected, address, refetchUserInvoices]);
+
+  // Refetch when user navigates back to invoices page
+  useEffect(() => {
+    const handleFocus = () => {
+      if (isConnected && address) {
+        refetchUserInvoices?.();
+      }
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [isConnected, address, refetchUserInvoices]);
+
+  // Refetch invoice details when userInvoiceIds change
+  useEffect(() => {
+    if (userInvoiceIds?.length > 0) {
+      refetchInvoices?.();
+    }
+  }, [userInvoiceIds, refetchInvoices]);
 
   // Process invoice data when it changes
   useEffect(() => {
@@ -128,8 +162,11 @@ export default function Invoices() {
       setInvoices([]);
       setFilteredInvoices([]);
       setLoading(false);
+    } else if (userInvoiceIds === undefined && !userInvoicesError) {
+      // Still loading
+      setLoading(true);
     }
-  }, [invoicesData, userInvoiceIds]);
+  }, [invoicesData, userInvoiceIds, userInvoicesError]);
 
   // Filter and search functionality
   useEffect(() => {

@@ -33,7 +33,7 @@ contract Escrow is Ownable, ReentrancyGuard {
     event DisputeRaised(uint256 indexed escrowId, address indexed raiser);
     event EscrowCancelled(uint256 indexed escrowId);
     
-    constructor() Ownable(msg.sender) {}
+    constructor() {}
     
     modifier onlyEscrowParties(uint256 escrowId) {
         require(

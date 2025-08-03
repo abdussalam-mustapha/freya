@@ -71,7 +71,21 @@ export default function CreateInvoice() {
     enabled: Boolean(formData.client && formData.amount && formData.dueDate && formData.description && isConnected),
   });
 
-  const { data, isLoading, isSuccess, write, error: writeError } = useContractWrite(config);
+  const { data, isLoading, isSuccess, write, error: writeError } = useContractWrite({
+    ...config,
+    onError: (error) => {
+      console.error('Contract write error:', error);
+      alert(`Transaction failed: ${error.shortMessage || error.message || 'Unknown error'}`);
+    },
+    onSuccess: (data) => {
+      console.log('Invoice created successfully:', data);
+      alert('Invoice created successfully!');
+      // Redirect to dashboard after success
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 2000);
+    }
+  });
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -112,10 +126,36 @@ export default function CreateInvoice() {
     
     if (write) {
       try {
+        console.log('Creating invoice with params:', {
+          client: formData.client,
+          amount: formData.amount,
+          dueDate: formData.dueDate,
+          description: formData.description,
+          useEscrow: formData.useEscrow,
+          contractAddress: contractAddress
+        });
+        
+        // Additional validation
+        const amountInWei = ethers.utils.parseEther(formData.amount);
+        const dueDateTimestamp = Math.floor(new Date(formData.dueDate).getTime() / 1000);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        console.log('Validation check:', {
+          amountInWei: amountInWei.toString(),
+          dueDateTimestamp,
+          currentTimestamp,
+          isValidDueDate: dueDateTimestamp > currentTimestamp
+        });
+        
+        if (dueDateTimestamp <= currentTimestamp) {
+          alert('Due date must be in the future');
+          return;
+        }
+        
         write();
       } catch (error) {
         console.error('Error creating invoice:', error);
-        alert('Error creating invoice. Please try again.');
+        alert(`Error creating invoice: ${error.shortMessage || error.message || 'Please try again.'}`);
       }
     }
   };

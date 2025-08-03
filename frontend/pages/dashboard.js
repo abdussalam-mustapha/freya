@@ -6,6 +6,17 @@ import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
+
+// Add a simple contract existence check
+const CONTRACT_EXISTENCE_ABI = [
+  {
+    "inputs": [],
+    "name": "nextInvoiceId",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  }
+];
 const INVOICE_MANAGER_ABI = [
   {
     "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
@@ -87,18 +98,43 @@ export default function Dashboard() {
     overdueCount: 0
   });
   const [loading, setLoading] = useState(true);
+  const [contractError, setContractError] = useState(null);
 
-  // Get user's invoice IDs
-  const { data: userInvoiceIds, isError: userInvoicesError } = useContractRead({
+  // Test if contract exists by calling a simple function
+  const { data: contractNextInvoiceId, isError: contractTestError, error: contractTestErrorDetails } = useContractRead({
+    address: INVOICE_MANAGER_ADDRESS,
+    abi: CONTRACT_EXISTENCE_ABI,
+    functionName: 'nextInvoiceId',
+    enabled: isConnected && !!INVOICE_MANAGER_ADDRESS,
+    onError: (error) => {
+      console.error('Contract test failed:', error);
+      setContractError(error.message || 'Contract not accessible');
+    },
+    onSuccess: (data) => {
+      console.log('Contract test successful, nextInvoiceId:', data?.toString());
+      setContractError(null);
+    }
+  });
+
+  // Get user's invoice IDs with refetch capability
+  const { data: userInvoiceIds, isError: userInvoicesError, error: userInvoicesErrorDetails, refetch: refetchUserInvoices } = useContractRead({
     address: INVOICE_MANAGER_ADDRESS,
     abi: INVOICE_MANAGER_ABI,
     functionName: 'getUserInvoices',
     args: [address],
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS,
+    watch: true, // Watch for changes
+    cacheTime: 0, // Disable caching
+    onError: (error) => {
+      console.error('Error fetching user invoices:', error);
+    },
+    onSuccess: (data) => {
+      console.log('User invoices fetched:', data);
+    }
   });
 
   // Get total invoice count
-  const { data: nextInvoiceId } = useContractRead({
+  const { data: totalInvoiceCount } = useContractRead({
     address: INVOICE_MANAGER_ADDRESS,
     abi: INVOICE_MANAGER_ABI,
     functionName: 'nextInvoiceId',
@@ -113,15 +149,98 @@ export default function Dashboard() {
     args: [invoiceId],
   }));
 
-  // Get invoice details
-  const { data: invoicesData, isLoading: invoicesLoading } = useContractReads({
+  // Get invoice details with refetch capability
+  const { data: invoicesData, isLoading: invoicesLoading, refetch: refetchInvoices } = useContractReads({
     contracts: invoiceReads,
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && (userInvoiceIds?.length > 0),
+    watch: true, // Watch for changes
+    cacheTime: 0, // Disable caching
+    onError: (error) => {
+      console.error('Error fetching invoice details:', error);
+    },
+    onSuccess: (data) => {
+      console.log('Invoice details fetched:', data);
+    }
   });
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Dashboard Debug Info:', {
+      isConnected,
+      address,
+      INVOICE_MANAGER_ADDRESS,
+      userInvoiceIds,
+      userInvoicesError,
+      userInvoicesErrorDetails,
+      invoicesData,
+      invoicesLoading
+    });
+    
+    // Additional debugging
+    if (!INVOICE_MANAGER_ADDRESS) {
+      console.error('INVOICE_MANAGER_ADDRESS is not set!');
+    }
+    if (!isConnected) {
+      console.log('Wallet not connected');
+    }
+    if (!address) {
+      console.log('No wallet address available');
+    }
+  }, [isConnected, address, userInvoiceIds, userInvoicesError, userInvoicesErrorDetails, invoicesData, invoicesLoading]);
+
+  // Test contract connectivity
+  useEffect(() => {
+    if (isConnected && address && INVOICE_MANAGER_ADDRESS) {
+      console.log('Testing contract connectivity...');
+      console.log('Contract Address:', INVOICE_MANAGER_ADDRESS);
+      console.log('User Address:', address);
+      console.log('Contract Test Error:', contractTestError);
+      console.log('Contract Error Details:', contractTestErrorDetails);
+      console.log('Next Invoice ID:', contractNextInvoiceId?.toString());
+      
+      // Force a manual call to see if contract is accessible
+      setTimeout(() => {
+        if (userInvoiceIds === undefined && !userInvoicesError) {
+          console.warn('Contract read is taking too long - possible network/contract issue');
+          console.warn('Contract Error State:', { contractTestError, contractError });
+        }
+      }, 5000);
+    }
+  }, [isConnected, address, INVOICE_MANAGER_ADDRESS, userInvoiceIds, userInvoicesError, contractTestError, contractError, contractNextInvoiceId]);
+
+  // Refetch data every 10 seconds to catch new invoices
+  useEffect(() => {
+    if (!isConnected || !address) return;
+    
+    const interval = setInterval(() => {
+      refetchUserInvoices?.();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [isConnected, address, refetchUserInvoices]);
+
+  // Refetch when user navigates back to dashboard (e.g., after creating invoice)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (isConnected && address) {
+        refetchUserInvoices?.();
+      }
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [isConnected, address, refetchUserInvoices]);
+
+  // Refetch invoice details when userInvoiceIds change
+  useEffect(() => {
+    if (userInvoiceIds?.length > 0) {
+      refetchInvoices?.();
+    }
+  }, [userInvoiceIds, refetchInvoices]);
 
   // Process invoice data when it changes
   useEffect(() => {
@@ -183,8 +302,22 @@ export default function Dashboard() {
         overdueCount: 0
       });
       setLoading(false);
+    } else if (userInvoicesError) {
+      // Error occurred
+      console.error('User invoices error:', userInvoicesErrorDetails);
+      setLoading(false);
+      setRecentInvoices([]);
+      setStats({
+        totalInvoices: 0,
+        pendingAmount: 0,
+        paidAmount: 0,
+        overdueCount: 0
+      });
+    } else if (userInvoiceIds === undefined && !userInvoicesError) {
+      // Still loading
+      setLoading(true);
     }
-  }, [invoicesData, userInvoiceIds]);
+  }, [invoicesData, userInvoiceIds, userInvoicesError, userInvoicesErrorDetails]);
 
   if (!mounted) {
     return null;
@@ -195,9 +328,32 @@ export default function Dashboard() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <FreyaLogo size="lg" className="mb-6" />
-          <h1 className="text-3xl font-bold text-white mb-4">Connect Your Wallet</h1>
-          <p className="text-white/60 mb-8">Please connect your wallet to access your dashboard</p>
+          <h1 className="text-2xl font-bold text-white mb-4">Connect Your Wallet</h1>
+          <p className="text-white/60 mb-6">Please connect your wallet to view your dashboard</p>
           <ConnectButton />
+        </div>
+      </div>
+    );
+  }
+
+  // Show contract error if there's an issue
+  if (contractError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <FreyaLogo size="lg" className="mb-6" />
+          <h1 className="text-2xl font-bold text-white mb-4">Contract Error</h1>
+          <div className="bg-red-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-6 mb-6">
+            <p className="text-red-400 mb-2">Unable to connect to smart contract</p>
+            <p className="text-red-300 text-sm">{contractError}</p>
+            <p className="text-white/60 text-xs mt-2">Contract: {INVOICE_MANAGER_ADDRESS}</p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );

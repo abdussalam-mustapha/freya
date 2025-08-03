@@ -8,10 +8,10 @@ async function main() {
   console.log("📝 Deploying contracts with account:", deployer.address);
   
   // Check deployer balance
-  const balance = await deployer.getBalance();
-  console.log("💰 Account balance:", hre.ethers.utils.formatEther(balance), "ETH");
+  const balance = await hre.ethers.provider.getBalance(deployer.address);
+  console.log("💰 Account balance:", hre.ethers.formatEther(balance), "ETH");
   
-  if (balance.lt(hre.ethers.utils.parseEther("0.01"))) {
+  if (balance < hre.ethers.parseEther("0.01")) {
     console.warn("⚠️  Warning: Low balance. Make sure you have enough funds for deployment.");
   }
   
@@ -20,26 +20,25 @@ async function main() {
     console.log("\n📋 Deploying InvoiceManager contract...");
     const InvoiceManager = await hre.ethers.getContractFactory("InvoiceManager");
     const invoiceManager = await InvoiceManager.deploy();
-    await invoiceManager.deployed();
+    await invoiceManager.waitForDeployment();
     
-    console.log("✅ InvoiceManager deployed to:", invoiceManager.address);
+    console.log("✅ InvoiceManager deployed to:", await invoiceManager.getAddress());
     
     // Deploy Escrow
     console.log("\n🔒 Deploying Escrow contract...");
     const Escrow = await hre.ethers.getContractFactory("Escrow");
     const escrow = await Escrow.deploy();
-    await escrow.deployed();
+    await escrow.waitForDeployment();
     
-    console.log("✅ Escrow deployed to:", escrow.address);
+    console.log("✅ Escrow deployed to:", await escrow.getAddress());
     
     // Wait for a few block confirmations
     console.log("\n⏳ Waiting for block confirmations...");
-    await invoiceManager.deployTransaction.wait(3);
-    await escrow.deployTransaction.wait(3);
+    // Note: In Ethers v6, we don't need to wait for deployTransaction
     
     console.log("\n🎉 Deployment completed successfully!");
-    console.log("📋 InvoiceManager:", invoiceManager.address);
-    console.log("🔒 Escrow:", escrow.address);
+    console.log("📋 InvoiceManager:", await invoiceManager.getAddress());
+    console.log("🔒 Escrow:", await escrow.getAddress());
     
     // Save deployment info
     const deploymentInfo = {
@@ -47,8 +46,8 @@ async function main() {
       chainId: hre.network.config.chainId,
       deployer: deployer.address,
       contracts: {
-        InvoiceManager: invoiceManager.address,
-        Escrow: escrow.address
+        InvoiceManager: await invoiceManager.getAddress(),
+        Escrow: await escrow.getAddress()
       },
       timestamp: new Date().toISOString(),
       blockNumber: await hre.ethers.provider.getBlockNumber()

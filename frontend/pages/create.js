@@ -124,11 +124,11 @@ export default function CreateInvoice() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <FreyaLogo size="lg" className="mb-6" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Connect Your Wallet</h1>
-          <p className="text-gray-600 mb-6">Please connect your wallet to create invoices</p>
+          <h1 className="text-2xl font-bold text-white mb-4">Connect Your Wallet</h1>
+          <p className="text-white/60 mb-6">Please connect your wallet to create invoices</p>
           <ConnectButton />
         </div>
       </div>
@@ -136,19 +136,21 @@ export default function CreateInvoice() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Navigation */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/5 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <FreyaLogo size="sm" showText={false} />
-              <h1 className="text-xl font-bold text-gray-900">Freya Invoice Portal</h1>
+              <h1 className="text-xl font-bold text-white">Freya Invoice Portal</h1>
             </div>
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex space-x-6">
-                <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+                <Link href="/" className="text-white/60 hover:text-white transition-colors">Home</Link>
+                <Link href="/dashboard" className="text-white/60 hover:text-white transition-colors">Dashboard</Link>
+                <Link href="/invoices" className="text-white/60 hover:text-white transition-colors">Invoices</Link>
+                <Link href="/analytics" className="text-white/60 hover:text-white transition-colors">Analytics</Link>
               </nav>
               <ConnectButton showBalance={false} />
             </div>
@@ -159,17 +161,17 @@ export default function CreateInvoice() {
       <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-            <Link href="/dashboard" className="hover:text-gray-700">Dashboard</Link>
+          <div className="flex items-center space-x-2 text-sm text-white/60 mb-4">
+            <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
             <span>/</span>
-            <span className="text-gray-900">Create Invoice</span>
+            <span className="text-white">Create Invoice</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Invoice</h1>
-          <p className="text-gray-600">Generate a new invoice for your client with optional escrow protection</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Create Invoice</h1>
+          <p className="text-white/60">Generate a new invoice for your client with optional escrow protection</p>
         </div>
 
         {isSuccess && (
-          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="mb-6 bg-green-500/10 backdrop-blur-xl border border-green-500/20 rounded-2xl p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -177,11 +179,11 @@ export default function CreateInvoice() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-green-800">Invoice Created Successfully!</h3>
-                <div className="mt-2 text-sm text-green-700">
+                <h3 className="text-sm font-medium text-green-400">Invoice Created Successfully!</h3>
+                <div className="mt-2 text-sm text-green-300">
                   <p>Your invoice has been created and stored on the blockchain.</p>
                   {data && (
-                    <p className="mt-1">Transaction hash: <span className="font-mono text-xs">{data.hash}</span></p>
+                    <p className="mt-1">Transaction hash: <span className="font-mono text-xs text-green-200">{data.hash}</span></p>
                   )}
                 </div>
               </div>
@@ -190,7 +192,7 @@ export default function CreateInvoice() {
         )}
 
         {(prepareError || writeError) && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="mb-6 bg-red-500/10 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -198,8 +200,8 @@ export default function CreateInvoice() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="text-sm font-medium text-red-400">Error</h3>
+                <div className="mt-2 text-sm text-red-300">
                   <p>{prepareError?.message || writeError?.message}</p>
                 </div>
               </div>
@@ -208,11 +210,11 @@ export default function CreateInvoice() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-lg p-6">
+        <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
           <div className="grid grid-cols-1 gap-6">
             {/* Client Address */}
             <div>
-              <label htmlFor="client" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="client" className="block text-sm font-medium text-white mb-2">
                 Client Wallet Address *
               </label>
               <input
@@ -222,16 +224,16 @@ export default function CreateInvoice() {
                 value={formData.client}
                 onChange={handleInputChange}
                 placeholder="0x..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">Enter the client's Ethereum wallet address</p>
+              <p className="mt-1 text-sm text-white/60">Enter the client's Ethereum wallet address</p>
             </div>
 
             {/* Amount */}
             <div>
-              <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                Amount (S) *
+              <label htmlFor="amount" className="block text-sm font-medium text-white mb-2">
+                Amount (ETH) *
               </label>
               <input
                 type="number"
@@ -242,15 +244,15 @@ export default function CreateInvoice() {
                 placeholder="0.00"
                 step="0.001"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">Amount in Sonic tokens</p>
+              <p className="mt-1 text-sm text-white/60">Amount in ETH on Sonic network</p>
             </div>
 
             {/* Due Date */}
             <div>
-              <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="dueDate" className="block text-sm font-medium text-white mb-2">
                 Due Date *
               </label>
               <input
@@ -259,14 +261,14 @@ export default function CreateInvoice() {
                 name="dueDate"
                 value={formData.dueDate}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
             </div>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="description" className="block text-sm font-medium text-white mb-2">
                 Description *
               </label>
               <textarea
@@ -276,7 +278,7 @@ export default function CreateInvoice() {
                 onChange={handleInputChange}
                 rows={4}
                 placeholder="Describe the work or services provided..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
             </div>
@@ -289,16 +291,16 @@ export default function CreateInvoice() {
                 name="useEscrow"
                 checked={formData.useEscrow}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
               />
-              <label htmlFor="useEscrow" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="useEscrow" className="ml-2 block text-sm text-white">
                 Use Escrow Protection
               </label>
             </div>
             {formData.useEscrow && (
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                <p className="text-sm text-blue-800">
-                  <strong>Escrow Protection:</strong> Funds will be held in a smart contract until work is completed and approved by the client.
+              <div className="bg-blue-500/10 backdrop-blur-xl border border-blue-500/20 rounded-2xl p-4">
+                <p className="text-sm text-blue-300">
+                  <strong className="text-blue-200">Escrow Protection:</strong> Funds will be held in a smart contract until work is completed and approved by the client.
                 </p>
               </div>
             )}
@@ -306,15 +308,22 @@ export default function CreateInvoice() {
 
           {/* Submit Button */}
           <div className="mt-8 flex justify-end space-x-4">
-            <Link href="/dashboard" className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+            <Link href="/dashboard" className="px-6 py-3 border border-white/20 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all">
               Cancel
             </Link>
             <button
               type="submit"
               disabled={isLoading || !write}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
             >
-              {isLoading ? 'Creating...' : 'Create Invoice'}
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Creating...</span>
+                </div>
+              ) : (
+                'Create Invoice'
+              )}
             </button>
           </div>
         </form>

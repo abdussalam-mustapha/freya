@@ -12,44 +12,57 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-blue-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-      {/* Premium Navigation */}
-      <nav className="relative z-50 bg-white/5 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <FreyaLogo size="md" showText={true} />
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-white/70 hover:text-white transition-all duration-300 font-medium cursor-pointer hover:scale-105">
-                Features
-              </Link>
-              <Link href="#solutions" className="text-white/70 hover:text-white transition-all duration-300 font-medium cursor-pointer hover:scale-105">
-                Solutions
-              </Link>
-              <Link href="#pricing" className="text-white/70 hover:text-white transition-all duration-300 font-medium cursor-pointer hover:scale-105">
-                Pricing
-              </Link>
-              <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-full p-0.5">
-                <div className="bg-transparent rounded-full px-1">
-                  <ConnectButton />
-                </div>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+      {/* Navigation Header */}
+      <header className="relative z-50 bg-black/10 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <FreyaLogo size="sm" showText={false} />
+              <h1 className="text-xl font-bold text-white">Freya</h1>
             </div>
-            {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="flex items-center space-x-4">
+              <nav className="hidden md:flex space-x-6">
+                <Link href="/" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+                  Home
+                </Link>
+                {isConnected && (
+                  <>
+                    <Link href="/dashboard" className="text-white/60 hover:text-white transition-colors">
+                      Dashboard
+                    </Link>
+                    <Link href="/invoices" className="text-white/60 hover:text-white transition-colors">
+                      Invoices
+                    </Link>
+                    <Link href="/analytics" className="text-white/60 hover:text-white transition-colors">
+                      Analytics
+                    </Link>
+                    <Link href="/create" className="text-white/60 hover:text-white transition-colors">
+                      Create
+                    </Link>
+                  </>
+                )}
+                <Link href="#features" className="text-white/60 hover:text-white transition-colors">
+                  Features
+                </Link>
+              </nav>
               <ConnectButton />
             </div>
           </div>
         </div>
-      </nav>
+      </header>
+
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
 
       {/* Hero Section - World Class Design */}
       <section className="relative z-10 overflow-hidden py-24 lg:py-32">
@@ -546,8 +559,9 @@ export default function Home() {
               <h4 className="text-white font-bold text-lg mb-6">Product</h4>
               <ul className="space-y-4">
                 <li><Link href="#features" className="text-white/60 hover:text-white transition-colors cursor-pointer">Features</Link></li>
-                <li><Link href="#pricing" className="text-white/60 hover:text-white transition-colors cursor-pointer">Pricing</Link></li>
                 <li><Link href="/dashboard" className="text-white/60 hover:text-white transition-colors cursor-pointer">Dashboard</Link></li>
+                <li><Link href="/invoices" className="text-white/60 hover:text-white transition-colors cursor-pointer">Invoices</Link></li>
+                <li><Link href="/analytics" className="text-white/60 hover:text-white transition-colors cursor-pointer">Analytics</Link></li>
                 <li><Link href="/create" className="text-white/60 hover:text-white transition-colors cursor-pointer">Create Invoice</Link></li>
               </ul>
             </div>

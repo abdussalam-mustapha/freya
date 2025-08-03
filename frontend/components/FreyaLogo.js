@@ -17,7 +17,7 @@ const FreyaLogo = ({ size = 'md', showText = true, className = '' }) => {
 
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      {/* Freya Logo SVG */}
+      {/* Freya Logo - Based on provided design */}
       <div className={`${sizeClasses[size]} relative`}>
         <svg
           viewBox="0 0 100 100"
@@ -27,73 +27,49 @@ const FreyaLogo = ({ size = 'md', showText = true, className = '' }) => {
           {/* Gradient Definitions */}
           <defs>
             <linearGradient id="freyaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="50%" stopColor="#06B6D4" />
-              <stop offset="100%" stopColor="#8B5CF6" />
+              <stop offset="0%" stopColor="#2563EB" />
+              <stop offset="50%" stopColor="#3B82F6" />
+              <stop offset="100%" stopColor="#60A5FA" />
             </linearGradient>
             <linearGradient id="freyaAccent" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#F59E0B" />
-              <stop offset="100%" stopColor="#EF4444" />
+              <stop offset="0%" stopColor="#1D4ED8" />
+              <stop offset="100%" stopColor="#2563EB" />
             </linearGradient>
           </defs>
           
-          {/* Main Circle Background */}
-          <circle
-            cx="50"
-            cy="50"
-            r="45"
-            fill="url(#freyaGradient)"
-            className="drop-shadow-lg"
-          />
-          
-          {/* Inner Circle */}
-          <circle
-            cx="50"
-            cy="50"
-            r="35"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            opacity="0.3"
-          />
-          
-          {/* Stylized 'F' Letter */}
-          <g fill="white">
-            {/* Main vertical line of F */}
-            <rect x="35" y="25" width="4" height="50" rx="2" />
+          {/* Main F Shape - Modern, Clean Design */}
+          <g fill="url(#freyaGradient)">
+            {/* Main vertical stroke of F */}
+            <rect x="20" y="15" width="8" height="70" rx="4" />
             
-            {/* Top horizontal line of F */}
-            <rect x="35" y="25" width="25" height="4" rx="2" />
+            {/* Top horizontal stroke of F */}
+            <rect x="20" y="15" width="50" height="8" rx="4" />
             
-            {/* Middle horizontal line of F */}
-            <rect x="35" y="47" width="20" height="4" rx="2" />
+            {/* Middle horizontal stroke of F */}
+            <rect x="20" y="42" width="35" height="8" rx="4" />
             
-            {/* Decorative elements */}
-            <circle cx="65" cy="35" r="3" fill="url(#freyaAccent)" />
-            <circle cx="60" cy="57" r="2" fill="url(#freyaAccent)" />
+            {/* Modern accent dots */}
+            <circle cx="75" cy="25" r="4" fill="url(#freyaAccent)" />
+            <circle cx="65" cy="52" r="3" fill="url(#freyaAccent)" />
           </g>
           
-          {/* Outer glow effect */}
-          <circle
-            cx="50"
-            cy="50"
-            r="47"
-            fill="none"
-            stroke="url(#freyaGradient)"
-            strokeWidth="1"
-            opacity="0.5"
-          />
+          {/* Subtle glow effect */}
+          <g fill="none" stroke="url(#freyaGradient)" strokeWidth="1" opacity="0.3">
+            <rect x="18" y="13" width="12" height="74" rx="6" />
+            <rect x="18" y="13" width="54" height="12" rx="6" />
+            <rect x="18" y="40" width="39" height="12" rx="6" />
+          </g>
         </svg>
       </div>
       
       {/* Freya Text */}
       {showText && (
         <div className="flex flex-col">
-          <span className={`font-bold bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 bg-clip-text text-transparent ${textSizeClasses[size]}`}>
-            Freya
+          <span className={`font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent ${textSizeClasses[size]}`}>
+            FREYA
           </span>
           {size === 'lg' || size === 'xl' ? (
-            <span className="text-sm text-gray-500 -mt-1">Invoice Portal</span>
+            <span className="text-sm text-gray-500 -mt-1 font-medium tracking-wide">Invoice Portal</span>
           ) : null}
         </div>
       )}

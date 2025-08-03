@@ -128,7 +128,7 @@ export default function CreateInvoice() {
         <div className="text-center">
           <FreyaLogo size="lg" className="mb-6" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Connect Your Wallet</h1>
-          <p className="text-gray-600 mb-6">Please connect your wallet to create invoices with Freya</p>
+          <p className="text-gray-600 mb-6">Please connect your wallet to create invoices</p>
           <ConnectButton />
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function CreateInvoice() {
             <span className="text-gray-900">Create Invoice</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Invoice</h1>
-          <p className="text-gray-600">Generate a new invoice for your client with Freya's secure escrow protection</p>
+          <p className="text-gray-600">Generate a new invoice for your client with optional escrow protection</p>
         </div>
 
         {isSuccess && (

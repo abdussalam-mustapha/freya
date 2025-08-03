@@ -1,10 +1,10 @@
-# Freya Invoice Portal 🚀
+# Sonic Invoice Portal 🚀
 
-**Decentralized Invoice Management on Sonic Blockchain**
+**B2B DeFi Invoicing Platform on Sonic Blockchain**
 
-Freya is a cutting-edge decentralized invoicing platform built on the Sonic blockchain, designed for freelancers, businesses, and startups who need secure, transparent, and efficient invoice management with built-in escrow protection.
+Sonic Invoice Portal is a decentralized invoicing platform built for freelancers, startups, and B2B transactions on the Sonic blockchain. The platform leverages Sonic's FeeM infrastructure for micro-fee, high-speed financial interactions with optional escrow and milestone payment support.
 
-![Freya Logo](https://img.shields.io/badge/Freya-Invoice%20Portal-blue?style=for-the-badge&logo=ethereum)
+![Sonic Logo](https://img.shields.io/badge/Sonic-Invoice%20Portal-blue?style=for-the-badge&logo=ethereum)
 
 ## 🌟 Features
 
@@ -241,6 +241,10 @@ Freya demonstrates the power of decentralized finance (DeFi) applied to everyday
 
 ---
 
+**Built for Sonic S Tier University Edition Hackathon**
+
+*Submission Deadline: September 1, 2025*
+
 **Made with ❤️ for the Sonic Blockchain Ecosystem**
 
-*Empowering the future of decentralized business operations*
+*Empowering B2B DeFi with high-speed, low-cost transactions*

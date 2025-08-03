@@ -1,0 +1,25 @@
+{
+  "name": "freya-invoice-portal",
+  "version": "1.0.0",
+  "description": "Freya - Decentralized Invoice Portal on Sonic Blockchain",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js --network sonic-testnet",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "node": "hardhat node",
+    "clean": "hardhat clean"
+  },
+  "keywords": ["blockchain", "invoicing", "defi", "sonic", "web3"],
+  "author": "Freya Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3",
+    "dotenv": "^16.3.1"
+  }
+}

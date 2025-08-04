@@ -58,6 +58,14 @@ export function useUserRole() {
       return;
     }
 
+    // Check if user has a saved role preference first
+    const savedRole = localStorage.getItem(`userRole_${address}`);
+    if (savedRole && (savedRole === 'business' || savedRole === 'client')) {
+      setUserRole(savedRole);
+      setIsLoading(false);
+      return;
+    }
+
     // Determine role based on invoice activity
     const hasCreatedInvoices = userInvoices && userInvoices.length > 0;
     const hasReceivedInvoices = clientInvoices && clientInvoices.length > 0;
@@ -72,7 +80,7 @@ export function useUserRole() {
       // User has only received invoices - client role
       setUserRole('client');
     } else {
-      // New user with no invoice activity - default to business
+      // New user with no invoice activity - default to business but allow switching
       setUserRole('business');
     }
 
@@ -87,22 +95,12 @@ export function useUserRole() {
     }
   };
 
-  // Load role preference from localStorage on mount
-  useEffect(() => {
-    if (address && !isLoading) {
-      const savedRole = localStorage.getItem(`userRole_${address}`);
-      if (savedRole && (savedRole === 'business' || savedRole === 'client')) {
-        setUserRole(savedRole);
-      }
-    }
-  }, [address, isLoading]);
-
   return {
     userRole,
     isLoading,
     switchRole,
     hasCreatedInvoices: userInvoices && userInvoices.length > 0,
     hasReceivedInvoices: clientInvoices && clientInvoices.length > 0,
-    canSwitchRoles: userInvoices && userInvoices.length > 0 && clientInvoices && clientInvoices.length > 0
+    canSwitchRoles: true // Always allow role switching for flexibility
   };
 }

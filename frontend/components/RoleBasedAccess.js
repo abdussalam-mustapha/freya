@@ -5,15 +5,21 @@ import FreyaLogo from './FreyaLogo';
 
 export default function RoleBasedAccess({ allowedRoles, children, redirectTo }) {
   const router = useRouter();
-  const { userRole, isLoading } = useUserRole();
+  const { userRole, isLoading, hasCreatedInvoices, hasReceivedInvoices } = useUserRole();
 
   useEffect(() => {
     if (!isLoading && userRole && !allowedRoles.includes(userRole)) {
+      // For new users (no invoice history), allow them to access any page
+      // and let them choose their role naturally
+      if (!hasCreatedInvoices && !hasReceivedInvoices) {
+        return; // Don't redirect, let them access the page
+      }
+      
       // Redirect to appropriate page based on user role
       const redirectPath = redirectTo || (userRole === 'client' ? '/client-dashboard' : '/dashboard');
       router.replace(redirectPath);
     }
-  }, [userRole, isLoading, allowedRoles, redirectTo, router]);
+  }, [userRole, isLoading, allowedRoles, redirectTo, router, hasCreatedInvoices, hasReceivedInvoices]);
 
   // Show loading state while determining role
   if (isLoading) {
@@ -35,6 +41,11 @@ export default function RoleBasedAccess({ allowedRoles, children, redirectTo }) 
 
   // Show access denied if user doesn't have permission
   if (userRole && !allowedRoles.includes(userRole)) {
+    // For new users (no invoice history), allow access to both dashboards
+    if (!hasCreatedInvoices && !hasReceivedInvoices) {
+      return children; // Allow access
+    }
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center">
         <div className="text-center max-w-md">

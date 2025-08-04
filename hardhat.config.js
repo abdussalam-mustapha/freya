@@ -20,8 +20,8 @@ module.exports = {
       url: "https://rpc.blaze.soniclabs.com",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 57054,
-      gas: 2100000,
-      gasPrice: 8000000000,
+      gas: 3000000,
+      gasPrice: 60000000000, // Increased to match current network requirements
     },
     sonic: {
       url: "https://rpc.soniclabs.com",

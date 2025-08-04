@@ -6,6 +6,8 @@ import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
+console.log('🔍 Dashboard using contract address:', INVOICE_MANAGER_ADDRESS);
+console.log('🔍 Expected new address: 0xfC91C84f52c33fc4073Dc951d15868a7d650EA6E');
 
 // Add a simple contract existence check
 const CONTRACT_EXISTENCE_ABI = [
@@ -29,17 +31,24 @@ const INVOICE_MANAGER_ABI = [
     "inputs": [{"internalType": "uint256", "name": "invoiceId", "type": "uint256"}],
     "name": "getInvoice",
     "outputs": [
-      {"internalType": "uint256", "name": "id", "type": "uint256"},
-      {"internalType": "address", "name": "issuer", "type": "address"},
-      {"internalType": "address", "name": "client", "type": "address"},
-      {"internalType": "address", "name": "tokenAddress", "type": "address"},
-      {"internalType": "uint256", "name": "amount", "type": "uint256"},
-      {"internalType": "uint256", "name": "amountPaid", "type": "uint256"},
-      {"internalType": "uint256", "name": "dueDate", "type": "uint256"},
-      {"internalType": "string", "name": "description", "type": "string"},
-      {"internalType": "uint8", "name": "status", "type": "uint8"},
-      {"internalType": "bool", "name": "useEscrow", "type": "bool"},
-      {"internalType": "uint256", "name": "createdAt", "type": "uint256"}
+      {
+        "components": [
+          {"internalType": "uint256", "name": "id", "type": "uint256"},
+          {"internalType": "address", "name": "issuer", "type": "address"},
+          {"internalType": "address", "name": "client", "type": "address"},
+          {"internalType": "address", "name": "tokenAddress", "type": "address"},
+          {"internalType": "uint256", "name": "amount", "type": "uint256"},
+          {"internalType": "uint256", "name": "amountPaid", "type": "uint256"},
+          {"internalType": "uint256", "name": "dueDate", "type": "uint256"},
+          {"internalType": "string", "name": "description", "type": "string"},
+          {"internalType": "uint8", "name": "status", "type": "uint8"},
+          {"internalType": "bool", "name": "useEscrow", "type": "bool"},
+          {"internalType": "uint256", "name": "createdAt", "type": "uint256"}
+        ],
+        "internalType": "struct InvoiceManager.Invoice",
+        "name": "",
+        "type": "tuple"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -73,8 +82,13 @@ const getStatusColor = (status) => {
 
 const formatEther = (value) => {
   try {
+    // Handle both BigInt and regular numbers from Wagmi/Viem
+    if (typeof value === 'bigint') {
+      return parseFloat(ethers.utils.formatEther(value.toString())).toFixed(4);
+    }
     return parseFloat(ethers.utils.formatEther(value.toString())).toFixed(4);
-  } catch {
+  } catch (error) {
+    console.warn('formatEther error:', error, 'value:', value);
     return '0.0000';
   }
 };
@@ -141,27 +155,26 @@ export default function Dashboard() {
     enabled: !!INVOICE_MANAGER_ADDRESS,
   });
 
-  // Prepare contract reads for individual invoices
-  const invoiceReads = (userInvoiceIds || []).slice(0, 5).map((invoiceId) => ({
+  // Get the first invoice details using single contract read (more reliable)
+  const firstInvoiceId = userInvoiceIds?.[0];
+  const { data: firstInvoiceData, isLoading: invoicesLoading, refetch: refetchInvoices } = useContractRead({
     address: INVOICE_MANAGER_ADDRESS,
     abi: INVOICE_MANAGER_ABI,
     functionName: 'getInvoice',
-    args: [invoiceId],
-  }));
-
-  // Get invoice details with refetch capability
-  const { data: invoicesData, isLoading: invoicesLoading, refetch: refetchInvoices } = useContractReads({
-    contracts: invoiceReads,
-    enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && (userInvoiceIds?.length > 0),
-    watch: true, // Watch for changes
-    cacheTime: 0, // Disable caching
+    args: [firstInvoiceId],
+    enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && !!firstInvoiceId,
+    watch: true,
+    cacheTime: 0,
     onError: (error) => {
       console.error('Error fetching invoice details:', error);
     },
     onSuccess: (data) => {
-      console.log('Invoice details fetched:', data);
+      console.log('Single invoice data fetched:', data);
     }
   });
+
+  // Convert single invoice data to array format for compatibility
+  const invoicesData = firstInvoiceData ? [{ status: 'success', result: firstInvoiceData }] : [];
 
   useEffect(() => {
     setMounted(true);
@@ -252,14 +265,22 @@ export default function Dashboard() {
       
       invoicesData.forEach((result, index) => {
         if (result.status === 'success' && result.result) {
-          const [
-            id, issuer, client, tokenAddress, amount, amountPaid, 
-            dueDate, description, status, useEscrow, createdAt
-          ] = result.result;
+          // Add detailed logging for debugging
+          console.log('Raw invoice result:', result.result);
+          console.log('Invoice result status:', result.status);
+          console.log('Invoice result type:', typeof result.result);
           
-          const statusText = INVOICE_STATUS[status] || 'Unknown';
+          // Handle struct return format from getInvoice
+          const invoice = result.result;
+          const {
+            id, issuer, client, tokenAddress, amount, amountPaid,
+            dueDate, description, status, useEscrow, createdAt
+          } = invoice;
+          
+          // Convert BigInt values safely
+          const statusText = INVOICE_STATUS[Number(status)] || 'Unknown';
           const amountInEther = formatEther(amount);
-          const dueDateObj = new Date(parseInt(dueDate.toString()) * 1000);
+          const dueDateObj = new Date(Number(dueDate) * 1000);
           const isOverdue = dueDateObj < new Date() && statusText !== 'Paid';
           
           if (isOverdue) overdueCount++;

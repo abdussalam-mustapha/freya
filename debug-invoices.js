@@ -15,7 +15,7 @@ async function main() {
     console.log("\n📊 Test 1: Checking total invoice count...");
     const nextId = await contract.nextInvoiceId();
     console.log("Next Invoice ID (total created + 1):", nextId.toString());
-    console.log("Total invoices created:", (nextId - 1).toString());
+    console.log("Total invoices created:", (Number(nextId) - 1).toString());
     
     // Test 2: Get user invoices
     console.log("\n👤 Test 2: Getting user invoices...");
@@ -39,8 +39,8 @@ async function main() {
             amount: hre.ethers.formatEther(invoice.amount),
             description: invoice.description,
             status: invoice.status.toString(),
-            dueDate: new Date(invoice.dueDate.toNumber() * 1000).toISOString(),
-            createdAt: new Date(invoice.createdAt.toNumber() * 1000).toISOString()
+            dueDate: new Date(Number(invoice.dueDate) * 1000).toISOString(),
+            createdAt: new Date(Number(invoice.createdAt) * 1000).toISOString()
           });
         } catch (error) {
           console.error(`Error getting invoice ${invoiceId}:`, error.message);
@@ -52,7 +52,7 @@ async function main() {
     
     // Test 4: Check if invoices exist by ID (iterate through possible IDs)
     console.log("\n🔍 Test 4: Checking invoices by ID...");
-    const totalCreated = nextId - 1;
+    const totalCreated = Number(nextId) - 1;
     for (let i = 1; i <= totalCreated; i++) {
       try {
         const invoice = await contract.getInvoice(i);

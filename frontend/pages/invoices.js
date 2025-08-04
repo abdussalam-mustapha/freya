@@ -18,17 +18,24 @@ const INVOICE_MANAGER_ABI = [
     "inputs": [{"internalType": "uint256", "name": "invoiceId", "type": "uint256"}],
     "name": "getInvoice",
     "outputs": [
-      {"internalType": "uint256", "name": "id", "type": "uint256"},
-      {"internalType": "address", "name": "issuer", "type": "address"},
-      {"internalType": "address", "name": "client", "type": "address"},
-      {"internalType": "address", "name": "tokenAddress", "type": "address"},
-      {"internalType": "uint256", "name": "amount", "type": "uint256"},
-      {"internalType": "uint256", "name": "amountPaid", "type": "uint256"},
-      {"internalType": "uint256", "name": "dueDate", "type": "uint256"},
-      {"internalType": "string", "name": "description", "type": "string"},
-      {"internalType": "uint8", "name": "status", "type": "uint8"},
-      {"internalType": "bool", "name": "useEscrow", "type": "bool"},
-      {"internalType": "uint256", "name": "createdAt", "type": "uint256"}
+      {
+        "components": [
+          {"internalType": "uint256", "name": "id", "type": "uint256"},
+          {"internalType": "address", "name": "issuer", "type": "address"},
+          {"internalType": "address", "name": "client", "type": "address"},
+          {"internalType": "address", "name": "tokenAddress", "type": "address"},
+          {"internalType": "uint256", "name": "amount", "type": "uint256"},
+          {"internalType": "uint256", "name": "amountPaid", "type": "uint256"},
+          {"internalType": "uint256", "name": "dueDate", "type": "uint256"},
+          {"internalType": "string", "name": "description", "type": "string"},
+          {"internalType": "uint8", "name": "status", "type": "uint8"},
+          {"internalType": "bool", "name": "useEscrow", "type": "bool"},
+          {"internalType": "uint256", "name": "createdAt", "type": "uint256"}
+        ],
+        "internalType": "struct InvoiceManager.Invoice",
+        "name": "",
+        "type": "tuple"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -45,8 +52,13 @@ const INVOICE_STATUS = {
 
 const formatEther = (value) => {
   try {
+    // Handle both BigInt and regular numbers from Wagmi/Viem
+    if (typeof value === 'bigint') {
+      return parseFloat(ethers.utils.formatEther(value.toString())).toFixed(4);
+    }
     return parseFloat(ethers.utils.formatEther(value.toString())).toFixed(4);
-  } catch {
+  } catch (error) {
+    console.warn('formatEther error:', error, 'value:', value);
     return '0.0000';
   }
 };
@@ -129,14 +141,17 @@ export default function Invoices() {
       
       invoicesData.forEach((result, index) => {
         if (result.status === 'success' && result.result) {
-          const [
-            id, issuer, client, tokenAddress, amount, amountPaid, 
+          // Handle struct return format from getInvoice
+          const invoice = result.result;
+          const {
+            id, issuer, client, tokenAddress, amount, amountPaid,
             dueDate, description, status, useEscrow, createdAt
-          ] = result.result;
+          } = invoice;
           
-          const statusText = INVOICE_STATUS[status] || 'Unknown';
+          // Convert BigInt values safely
+          const statusText = INVOICE_STATUS[Number(status)] || 'Unknown';
           const amountInEther = formatEther(amount);
-          const dueDateObj = new Date(parseInt(dueDate.toString()) * 1000);
+          const dueDateObj = new Date(Number(dueDate) * 1000);
           const createdAtObj = new Date(parseInt(createdAt.toString()) * 1000);
           const isOverdue = dueDateObj < new Date() && statusText !== 'Paid';
           

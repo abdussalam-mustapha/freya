@@ -16,18 +16,28 @@ async function main() {
   }
   
   try {
-    // Deploy InvoiceManager
+    // Get current gas price and add buffer
+    const gasPrice = await hre.ethers.provider.getFeeData();
+    console.log(`Current gas price: ${gasPrice.gasPrice} wei`);
+    
+    // Deploy InvoiceManager with proper gas settings
     console.log("\n📋 Deploying InvoiceManager contract...");
     const InvoiceManager = await hre.ethers.getContractFactory("InvoiceManager");
-    const invoiceManager = await InvoiceManager.deploy();
+    const invoiceManager = await InvoiceManager.deploy({
+      gasPrice: gasPrice.gasPrice ? gasPrice.gasPrice * 2n : undefined, // Double the gas price
+      gasLimit: 3000000 // Set explicit gas limit
+    });
     await invoiceManager.waitForDeployment();
     
     console.log("✅ InvoiceManager deployed to:", await invoiceManager.getAddress());
     
-    // Deploy Escrow
+    // Deploy Escrow with proper gas settings
     console.log("\n🔒 Deploying Escrow contract...");
     const Escrow = await hre.ethers.getContractFactory("Escrow");
-    const escrow = await Escrow.deploy();
+    const escrow = await Escrow.deploy({
+      gasPrice: gasPrice.gasPrice ? gasPrice.gasPrice * 2n : undefined, // Double the gas price
+      gasLimit: 3000000 // Set explicit gas limit
+    });
     await escrow.waitForDeployment();
     
     console.log("✅ Escrow deployed to:", await escrow.getAddress());

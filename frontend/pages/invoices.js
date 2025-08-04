@@ -82,6 +82,7 @@ export default function Invoices() {
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS,
     watch: true, // Watch for changes
     cacheTime: 0, // Disable caching
+    queryKey: ['userInvoices', address], // Add query key for cache invalidation
   });
 
   // Prepare contract reads for individual invoices
@@ -98,6 +99,7 @@ export default function Invoices() {
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && (userInvoiceIds?.length > 0),
     watch: true, // Watch for changes
     cacheTime: 0, // Disable caching
+    queryKey: ['invoices', address], // Add query key for cache invalidation
   });
 
   useEffect(() => {

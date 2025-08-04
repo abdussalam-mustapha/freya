@@ -131,7 +131,7 @@ export default function Dashboard() {
   });
 
   // Get user's invoice IDs with refetch capability
-  const { data: userInvoiceIds, isError: userInvoicesError, error: userInvoicesErrorDetails, refetch: refetchUserInvoices } = useContractRead({
+  const { data: userInvoiceIds, isError: userInvoicesError, refetch: refetchUserInvoices } = useContractRead({
     address: INVOICE_MANAGER_ADDRESS,
     abi: INVOICE_MANAGER_ABI,
     functionName: 'getUserInvoices',
@@ -139,6 +139,7 @@ export default function Dashboard() {
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS,
     watch: true, // Watch for changes
     cacheTime: 0, // Disable caching
+    queryKey: ['dashboard', 'userInvoices', address], // Add query key for cache invalidation
     onError: (error) => {
       console.error('Error fetching user invoices:', error);
     },
@@ -165,6 +166,7 @@ export default function Dashboard() {
     enabled: isConnected && !!address && !!INVOICE_MANAGER_ADDRESS && !!firstInvoiceId,
     watch: true,
     cacheTime: 0,
+    queryKey: ['dashboard', 'invoiceDetails', firstInvoiceId], // Add query key for cache invalidation
     onError: (error) => {
       console.error('Error fetching invoice details:', error);
     },
@@ -188,7 +190,6 @@ export default function Dashboard() {
       INVOICE_MANAGER_ADDRESS,
       userInvoiceIds,
       userInvoicesError,
-      userInvoicesErrorDetails,
       invoicesData,
       invoicesLoading
     });
@@ -203,7 +204,7 @@ export default function Dashboard() {
     if (!address) {
       console.log('No wallet address available');
     }
-  }, [isConnected, address, userInvoiceIds, userInvoicesError, userInvoicesErrorDetails, invoicesData, invoicesLoading]);
+  }, [isConnected, address, userInvoiceIds, userInvoicesError, invoicesData, invoicesLoading]);
 
   // Test contract connectivity
   useEffect(() => {
@@ -338,7 +339,7 @@ export default function Dashboard() {
       // Still loading
       setLoading(true);
     }
-  }, [invoicesData, userInvoiceIds, userInvoicesError, userInvoicesErrorDetails]);
+  }, [invoicesData, userInvoiceIds, userInvoicesError]);
 
   if (!mounted) {
     return null;

@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useAccount, useContractWrite, usePrepareContractWrite, useQueryClient } from 'wagmi';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import FreyaLogo from '../components/FreyaLogo';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 export default function CreateInvoice() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     client: '',
@@ -88,11 +89,25 @@ export default function CreateInvoice() {
     },
     onSuccess: (data) => {
       console.log('Invoice created successfully:', data);
+      
+      // Invalidate and refetch invoice-related queries with specific keys to match dashboard
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['userInvoices'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'userInvoices', address] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'invoiceDetails'] });
+      queryClient.invalidateQueries({ queryKey: ['invoices', address] });
+      queryClient.invalidateQueries({ queryKey: ['userInvoices', address] });
+      
+      // Force refetch all queries to ensure fresh data
+      queryClient.refetchQueries();
+      
       alert('Invoice created successfully!');
-      // Redirect to dashboard after success
+      
+      // Redirect to invoices page to see the new invoice
       setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
+        router.push('/invoices');
+      }, 1500);
     }
   });
 

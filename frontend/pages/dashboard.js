@@ -390,7 +390,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <FreyaLogo size="sm" showText={false} />
-              <h1 className="text-xl font-bold text-white">Freya Dashboard</h1>
+              <h1 className="text-xl font-bold text-white">Freya</h1>
             </div>
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex space-x-6">

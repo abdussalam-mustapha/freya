@@ -4,6 +4,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
+import RoleBasedNavigation from '../components/RoleBasedNavigation';
+import RoleBasedAccess from '../components/RoleBasedAccess';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -233,24 +235,23 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-3">
-            <FreyaLogo className="w-8 h-8" />
-            <div>
-              <h1 className="text-2xl font-bold text-white">Client Dashboard</h1>
-              <p className="text-white/60">Manage invoices sent to you</p>
+    <RoleBasedAccess allowedRoles={['client']}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-3">
+              <FreyaLogo className="w-8 h-8" />
+              <div>
+                <h1 className="text-2xl font-bold text-white">Client Dashboard</h1>
+                <p className="text-white/60">Manage invoices sent to you</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <RoleBasedNavigation />
+              <ConnectButton />
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/dashboard" className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/20">
-              Business Dashboard
-            </Link>
-            <ConnectButton />
-          </div>
-        </div>
 
         {/* Notifications */}
         {notifications.length > 0 && (
@@ -450,7 +451,8 @@ export default function ClientDashboard() {
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </RoleBasedAccess>
   );
 }

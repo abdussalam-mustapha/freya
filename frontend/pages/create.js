@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 import Link from 'next/link';
 import FreyaLogo from '../components/FreyaLogo';
 import { useRouter } from 'next/router';
+import RoleBasedNavigation from '../components/RoleBasedNavigation';
+import RoleBasedAccess from '../components/RoleBasedAccess';
 
 export default function CreateInvoice() {
   const { address, isConnected } = useAccount();
@@ -200,39 +202,33 @@ export default function CreateInvoice() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Navigation */}
-      <header className="bg-white/5 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <FreyaLogo size="sm" showText={false} />
-              <h1 className="text-xl font-bold text-white">Freya</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex space-x-6">
-                <Link href="/" className="text-white/60 hover:text-white transition-colors">Home</Link>
-                <Link href="/dashboard" className="text-white/60 hover:text-white transition-colors">Dashboard</Link>
-                <Link href="/invoices" className="text-white/60 hover:text-white transition-colors">Invoices</Link>
-                <Link href="/analytics" className="text-white/60 hover:text-white transition-colors">Analytics</Link>
-              </nav>
-              <ConnectButton showBalance={false} />
+    <RoleBasedAccess allowedRoles={['business']}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+        {/* Header */}
+        <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <FreyaLogo size="sm" showText={false} />
+                <h1 className="text-xl font-bold text-white">Freya</h1>
+              </div>
+              <div className="flex items-center space-x-4">
+                <RoleBasedNavigation />
+                <ConnectButton />
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
+        <main className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm text-white/60 mb-4">
             <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
             <span>/</span>
             <span className="text-white">Create Invoice</span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Create Invoice</h1>
-          <p className="text-white/60">Generate a new invoice for your client with optional escrow protection</p>
-        </div>
+          <p className="text-white/60 mb-8">Generate a new invoice for your client with optional escrow protection</p>
 
         {isSuccess && (
           <div className="mb-6 bg-green-500/10 backdrop-blur-xl border border-green-500/20 rounded-2xl p-4">
@@ -624,7 +620,8 @@ export default function CreateInvoice() {
             </div>
           </div>
         </form>
-      </main>
-    </div>
+        </main>
+      </div>
+    </RoleBasedAccess>
   );
 }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useAccount, useContractRead, useContractReads } from 'wagmi';
+import { useAccount, useContractRead } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
-import NotificationSystem from '../components/NotificationSystem';
+import RoleBasedNavigation from '../components/RoleBasedNavigation';
+import RoleBasedAccess from '../components/RoleBasedAccess';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 console.log('🔍 Dashboard using contract address:', INVOICE_MANAGER_ADDRESS);
@@ -408,47 +409,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Header */}
-      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <FreyaLogo size="sm" showText={false} />
-              <h1 className="text-xl font-bold text-white">Freya</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex space-x-6">
-                <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                  Business
-                </Link>
-                <Link href="/client-dashboard" className="text-white/60 hover:text-white transition-colors">
-                  Client
-                </Link>
-                <Link href="/invoices" className="text-white/60 hover:text-white transition-colors">
-                  Invoices
-                </Link>
-                <Link href="/analytics" className="text-white/60 hover:text-white transition-colors">
-                  Analytics
-                </Link>
-                <Link href="/create" className="text-white/60 hover:text-white transition-colors">
-                  Create
-                </Link>
-              </nav>
-              <NotificationSystem 
-                onNotificationClick={(notification) => {
-                  if (notification.type === 'view_all' || notification.invoiceId) {
-                    router.push('/client-dashboard');
-                  }
-                }}
-              />
-              <ConnectButton />
+    <RoleBasedAccess allowedRoles={['business']}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        {/* Header */}
+        <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <FreyaLogo size="sm" showText={false} />
+                <h1 className="text-xl font-bold text-white">Freya</h1>
+              </div>
+              <div className="flex items-center space-x-4">
+                <RoleBasedNavigation />
+                <ConnectButton />
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
@@ -662,7 +641,8 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </RoleBasedAccess>
   );
 }

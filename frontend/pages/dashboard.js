@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useContractReads } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
+import NotificationSystem from '../components/NotificationSystem';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 console.log('🔍 Dashboard using contract address:', INVOICE_MANAGER_ADDRESS);
@@ -103,6 +105,7 @@ const formatDate = (timestamp) => {
 
 export default function Dashboard() {
   const { address, isConnected } = useAccount();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [recentInvoices, setRecentInvoices] = useState([]);
   const [stats, setStats] = useState({
@@ -417,7 +420,10 @@ export default function Dashboard() {
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex space-x-6">
                 <Link href="/dashboard" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
-                  Dashboard
+                  Business
+                </Link>
+                <Link href="/client-dashboard" className="text-white/60 hover:text-white transition-colors">
+                  Client
                 </Link>
                 <Link href="/invoices" className="text-white/60 hover:text-white transition-colors">
                   Invoices
@@ -429,6 +435,13 @@ export default function Dashboard() {
                   Create
                 </Link>
               </nav>
+              <NotificationSystem 
+                onNotificationClick={(notification) => {
+                  if (notification.type === 'view_all' || notification.invoiceId) {
+                    router.push('/client-dashboard');
+                  }
+                }}
+              />
               <ConnectButton />
             </div>
           </div>

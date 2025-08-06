@@ -6,6 +6,9 @@ import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
 import RoleBasedNavigation from '../components/RoleBasedNavigation';
 import RoleBasedAccess from '../components/RoleBasedAccess';
+import PaymentProcessor from '../components/PaymentProcessor';
+import DisputeManager from '../components/DisputeManager';
+import FeeMRevenueDashboard from '../components/FeeMIntegration';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -111,6 +114,10 @@ export default function ClientDashboard() {
   const [clientInvoices, setClientInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [showPaymentProcessor, setShowPaymentProcessor] = useState(false);
+  const [showDisputeManager, setShowDisputeManager] = useState(false);
+  const [showFeeMDashboard, setShowFeeMDashboard] = useState(false);
 
   // Get client's invoice IDs
   const { data: clientInvoiceIds, isError: clientInvoicesError, refetch: refetchClientInvoices } = useContractRead({
@@ -213,6 +220,31 @@ export default function ClientDashboard() {
     }
   }, [clientInvoiceIds, address]);
 
+  // Payment and dispute handlers
+  const handlePayInvoice = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowPaymentProcessor(true);
+  };
+
+  const handleRaiseDispute = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowDisputeManager(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    // Refresh invoice data after successful payment
+    if (clientInvoiceIds) {
+      refetchClientInvoices();
+    }
+  };
+
+  const handleDisputeSuccess = () => {
+    // Refresh invoice data after successful dispute
+    if (clientInvoiceIds) {
+      refetchClientInvoices();
+    }
+  };
+
   if (!mounted) {
     return null;
   }
@@ -224,7 +256,7 @@ export default function ClientDashboard() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
               <FreyaLogo className="w-8 h-8" />
-              <h1 className="text-2xl font-bold text-white">Freya - Client Dashboard</h1>
+
             </div>
           </div>
           
@@ -253,10 +285,7 @@ export default function ClientDashboard() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
               <FreyaLogo className="w-8 h-8" />
-              <div>
-                <h1 className="text-2xl font-bold text-white">Client Dashboard</h1>
-                <p className="text-white/60">Manage invoices sent to you</p>
-              </div>
+
             </div>
             <div className="flex items-center space-x-4">
               <RoleBasedNavigation />
@@ -446,9 +475,20 @@ export default function ClientDashboard() {
                           View Details
                         </button>
                         {invoice.status === 0 && (
-                          <button className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg text-sm font-medium transition-all">
-                            Pay Now
-                          </button>
+                          <>
+                            <button 
+                              onClick={() => handlePayInvoice(invoice)}
+                              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg text-sm font-medium transition-all"
+                            >
+                              Pay Now
+                            </button>
+                            <button 
+                              onClick={() => handleRaiseDispute(invoice)}
+                              className="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white rounded-lg text-sm font-medium transition-all"
+                            >
+                              Raise Dispute
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
@@ -464,6 +504,26 @@ export default function ClientDashboard() {
         </div>
         </div>
       </div>
+
+      {/* Payment and Dispute Modals */}
+      <PaymentProcessor
+        invoice={selectedInvoice}
+        isOpen={showPaymentProcessor}
+        onClose={() => setShowPaymentProcessor(false)}
+        onSuccess={handlePaymentSuccess}
+      />
+      
+      <DisputeManager
+        invoice={selectedInvoice}
+        isOpen={showDisputeManager}
+        onClose={() => setShowDisputeManager(false)}
+        onSuccess={handleDisputeSuccess}
+      />
+      
+      <FeeMRevenueDashboard
+        isOpen={showFeeMDashboard}
+        onClose={() => setShowFeeMDashboard(false)}
+      />
     </RoleBasedAccess>
   );
 }

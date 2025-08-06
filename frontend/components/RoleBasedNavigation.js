@@ -23,6 +23,7 @@ export default function RoleBasedNavigation() {
     { href: '/dashboard', label: 'Dashboard', key: 'dashboard' },
     { href: '/invoices', label: 'Invoices', key: 'invoices' },
     { href: '/analytics', label: 'Analytics', key: 'analytics' },
+    { href: '/feem-revenue', label: 'FeeM Revenue', key: 'feem-revenue' },
     { href: '/create', label: 'Create', key: 'create' }
   ];
 

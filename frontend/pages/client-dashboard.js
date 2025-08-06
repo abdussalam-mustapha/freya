@@ -140,22 +140,33 @@ export default function ClientDashboard() {
       const invoices = [];
       
       try {
-        // For now, we'll simulate fetching individual invoices
-        // In a real implementation, you'd fetch each invoice using the contract
-        for (let i = 0; i < Math.min(clientInvoiceIds.length, 5); i++) {
+        // Fetch real invoice data from smart contract
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(INVOICE_MANAGER_ADDRESS, INVOICE_MANAGER_ABI, provider);
+        
+        for (let i = 0; i < clientInvoiceIds.length; i++) {
           const invoiceId = clientInvoiceIds[i];
-          // Simulate invoice data - replace with actual contract calls
-          invoices.push({
-            id: invoiceId,
-            issuer: '0x1234567890123456789012345678901234567890',
-            client: address,
-            amount: ethers.utils.parseEther((Math.random() * 5 + 0.1).toFixed(4)),
-            dueDate: Math.floor(Date.now() / 1000) + (Math.random() * 30 * 24 * 60 * 60), // Random due date within 30 days
-            description: `Invoice #${invoiceId} - Professional services`,
-            status: Math.floor(Math.random() * 4),
-            useEscrow: Math.random() > 0.5,
-            createdAt: Math.floor(Date.now() / 1000) - (Math.random() * 7 * 24 * 60 * 60) // Created within last 7 days
-          });
+          try {
+            // Fetch actual invoice data from the contract
+            const invoiceData = await contract.getInvoice(invoiceId);
+            
+            invoices.push({
+              id: invoiceData.id,
+              issuer: invoiceData.issuer,
+              client: invoiceData.client,
+              tokenAddress: invoiceData.tokenAddress,
+              amount: invoiceData.amount,
+              amountPaid: invoiceData.amountPaid,
+              dueDate: invoiceData.dueDate,
+              description: invoiceData.description,
+              status: invoiceData.status,
+              useEscrow: invoiceData.useEscrow,
+              createdAt: invoiceData.createdAt
+            });
+          } catch (error) {
+            console.error(`Error fetching invoice ${invoiceId}:`, error);
+            // Continue with other invoices even if one fails
+          }
         }
         
         setClientInvoices(invoices);

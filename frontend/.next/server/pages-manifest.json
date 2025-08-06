@@ -3,7 +3,7 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/dashboard": "pages/dashboard.js",
-  "/analytics": "pages/analytics.js",
   "/client-dashboard": "pages/client-dashboard.js",
-  "/feem-revenue": "pages/feem-revenue.js"
+  "/feem-revenue": "pages/feem-revenue.js",
+  "/analytics": "pages/analytics.js"
 }

@@ -208,23 +208,112 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🎯 Roadmap
 
-### Phase 1 (Current)
+### Phase 1 (Implemented)
 - ✅ Core invoice creation and payment
 - ✅ Escrow protection
 - ✅ Milestone payments
 - ✅ Web3 wallet integration
 
-### Phase 2 (Future)
-- 🔄 AI-powered invoice generation
-- 🔄 On-chain reputation system
-- 🔄 NFT receipt generation
-- 🔄 Multi-signature support
+### Phase 2 (Implemented)
+- ✅ Real-time status tracking and payment history
+- ✅ NFT-based soulbound invoice receipts
+- ✅ Comprehensive compliance reporting (CSV/JSON export)
+- ✅ FeeM micro-gas optimization for reduced transaction costs
+- ✅ Role-based access control (Business Owner vs Client dashboards)
+- ✅ Payment and dispute management system
+- ✅ Live blockchain data integration
 
-### Phase 3 (Advanced)
-- 🔄 Cross-chain compatibility
-- 🔄 Privacy-preserving payments
+### Phase 3 (Coming Soon)
+- 🔄 Split Payments: Multiple contributors (DAO wallets or partner wallets) can fund invoices
+- 🔄 Cross-Chain Mirror: Invoice status replication to Ethereum/Solana when bridged
+- 🔄 ZK Privacy Toggle: Hide sensitive amounts while maintaining auditability
+- 🔄 AI-powered invoice generation
+- 🔄 Multi-signature support
 - 🔄 Automated recurring invoices
 - 🔄 Integration APIs
+
+## 🔄 Complete Workflow: Business Owner ↔ Client
+
+### 🔐 1. Authentication (Both BO & Client)
+- Both parties connect wallets (MetaMask, WalletConnect) to the Freya platform
+- Identity tied to wallet address with optional ENS support for better traceability
+- Role-based dashboard access (Business Owner vs Client views)
+
+### 🧾 2. Invoice Creation (Business Owner)
+- BO clicks "Create Invoice" on the dashboard
+- **Required Inputs:**
+  - Client wallet address
+  - Description (e.g., "UX design for landing page")
+  - Amount in S token or supported ERC20 assets
+  - Due date
+- **Optional Features:**
+  - Milestone-based payments
+  - Escrow functionality with time locks
+  - Additional notes and terms
+- Smart contract emits `InvoiceCreated` event for real-time updates
+
+### 📨 3. Invoice Notification (Client)
+- **Client receives:**
+  - Real-time UI notifications in client dashboard
+  - Invoice appears under "Received Invoices" section
+  - Overdue and due-soon alerts with visual indicators
+- **Notification types:**
+  - New invoice alerts
+  - Payment due reminders
+  - Overdue notifications
+
+### 💸 4. Payment or Dispute (Client)
+- **Client review options:**
+  - **Pay in full:** Complete invoice payment
+  - **Milestone payments:** Partial payments for milestone-based invoices
+  - **Initiate dispute:** Triggers `disputeInvoice()` with structured reasons
+- **Payment features:**
+  - FeeM micro-gas optimization for reduced transaction costs
+  - Balance validation and user-friendly error handling
+  - Real-time transaction status updates
+
+### 🔁 5. Status Tracking & History
+- **Real-time status updates:**
+  - Created → Paid → Partially Paid → Overdue → Disputed → Completed
+- **Activity dashboard shows:**
+  - Complete payment history with timestamps
+  - Transaction hashes and blockchain confirmations
+  - Dispute logs and resolution status
+- **Both BO and client see:**
+  - Live invoice status changes
+  - Payment activity logs
+  - Comprehensive transaction history
+
+### 🎨 6. NFT Receipt Generation (Post-Payment)
+- **Automatic minting upon full payment:**
+  - Soulbound NFT receipt created automatically
+  - Contains invoice metadata, payment proof, and dynamic SVG
+  - Non-transferable permanent record of completed transaction
+- **NFT features:**
+  - Visible on both BO and client profiles
+  - Rich metadata with invoice details
+  - Export functionality for compliance
+  - On-chain proof of payment completion
+
+### 📊 7. Compliance & Export
+- **Comprehensive reporting:**
+  - Download compliance reports in CSV/JSON format
+  - Filter by date ranges (30 days, 90 days, 1 year, all time)
+  - Include/exclude NFT receipt data
+- **Report contents:**
+  - Complete invoice lifecycle data
+  - Payment history and transaction details
+  - Status breakdowns and summary statistics
+  - Blockchain verification data
+- **Use cases:**
+  - Tax reporting and compliance
+  - Business analytics and insights
+  - Audit trail documentation
+
+### 🔄 Advanced Features (Coming Soon)
+- **Split Payments:** Multiple contributors (DAO wallets or partner wallets) can fund invoices
+- **Cross-Chain Mirror:** Invoice status replication to Ethereum/Solana when bridged
+- **ZK Privacy Toggle:** Hide sensitive amounts while maintaining auditability
 
 ## 🏆 Hackathon Submission
 
@@ -243,7 +332,6 @@ Freya demonstrates the power of decentralized finance (DeFi) applied to everyday
 
 **Built for Sonic S Tier University Edition Hackathon**
 
-*Submission Deadline: September 1, 2025*
 
 **Made with ❤️ for the Sonic Blockchain Ecosystem**
 

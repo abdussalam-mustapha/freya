@@ -4,6 +4,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
+import UserAnalytics from '../components/UserAnalytics';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -55,6 +56,12 @@ export default function Analytics() {
   const [mounted, setMounted] = useState(false);
   const [timeRange, setTimeRange] = useState('30d');
   const [loading, setLoading] = useState(true);
+  const [showUserAnalytics, setShowUserAnalytics] = useState(false);
+  const [projectOwnerAddress, setProjectOwnerAddress] = useState('');
+
+  useEffect(() => {
+    setProjectOwnerAddress(process.env.NEXT_PUBLIC_PROJECT_OWNER_ADDRESS || '');
+  }, []);
   const [analytics, setAnalytics] = useState({
     totalRevenue: 0,
     totalInvoices: 0,
@@ -322,7 +329,20 @@ export default function Analytics() {
             <h2 className="text-3xl font-bold text-white mb-2">Business Analytics</h2>
             <p className="text-white/60">Track your performance and growth metrics</p>
           </div>
-          <div className="mt-4 md:mt-0">
+          <div className="mt-4 md:mt-0 flex items-center space-x-4">
+            {/* User Analytics - Only visible to project owner */}
+            {isConnected && address && projectOwnerAddress && 
+             address.toLowerCase() === projectOwnerAddress.toLowerCase() && (
+              <button
+                onClick={() => setShowUserAnalytics(true)}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl font-medium transition-all flex items-center space-x-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+                <span>User Analytics</span>
+              </button>
+            )}
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
@@ -642,6 +662,12 @@ export default function Analytics() {
           </div>
         </div>
       </div>
+      
+      {/* User Analytics Modal */}
+      <UserAnalytics
+        isOpen={showUserAnalytics}
+        onClose={() => setShowUserAnalytics(false)}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import PaymentProcessor from '../components/PaymentProcessor';
 import DisputeManager from '../components/DisputeManager';
 import FeeMIntegration from '../components/FeeMIntegration';
 import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
+import NFTReceiptViewer from '../components/NFTReceiptViewer';
 import RoleBasedAccess from '../components/RoleBasedAccess';
 import FreyaLogo from '../components/FreyaLogo';
 import RoleBasedNavigation from '../components/RoleBasedNavigation';
@@ -122,6 +123,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [contractError, setContractError] = useState(null);
   const [showStatusTracker, setShowStatusTracker] = useState(false);
+  const [showNFTReceipts, setShowNFTReceipts] = useState(false);
 
   // Test if contract exists by calling a simple function
   const { data: contractNextInvoiceId, isError: contractTestError, error: contractTestErrorDetails } = useContractRead({
@@ -616,6 +618,12 @@ export default function Dashboard() {
                 >
                   📊 Status Tracking & History
                 </button>
+                <button 
+                  onClick={() => setShowNFTReceipts(true)}
+                  className="block w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-3 rounded-xl font-medium hover:from-purple-600 hover:to-pink-600 transition-all text-center"
+                >
+                  🎨 NFT Receipt Collection
+                </button>
               </div>
             </div>
 
@@ -660,6 +668,13 @@ export default function Dashboard() {
         userRole="business"
         isOpen={showStatusTracker}
         onClose={() => setShowStatusTracker(false)}
+      />
+      
+      {/* NFT Receipt Viewer Modal */}
+      <NFTReceiptViewer 
+        userRole="business"
+        isOpen={showNFTReceipts}
+        onClose={() => setShowNFTReceipts(false)}
       />
     </RoleBasedAccess>
   );

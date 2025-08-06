@@ -10,6 +10,7 @@ import PaymentProcessor from '../components/PaymentProcessor';
 import DisputeManager from '../components/DisputeManager';
 import FeeMRevenueDashboard from '../components/FeeMIntegration';
 import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
+import NFTReceiptViewer from '../components/NFTReceiptViewer';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -120,6 +121,7 @@ export default function ClientDashboard() {
   const [showDisputeManager, setShowDisputeManager] = useState(false);
   const [showFeeMDashboard, setShowFeeMDashboard] = useState(false);
   const [showStatusTracker, setShowStatusTracker] = useState(false);
+  const [showNFTReceipts, setShowNFTReceipts] = useState(false);
 
   // Get client's invoice IDs
   const { data: clientInvoiceIds, isError: clientInvoicesError, refetch: refetchClientInvoices } = useContractRead({
@@ -295,6 +297,12 @@ export default function ClientDashboard() {
                 className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-medium hover:from-green-600 hover:to-emerald-600 transition-all text-sm"
               >
                 📊 Payment History
+              </button>
+              <button 
+                onClick={() => setShowNFTReceipts(true)}
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all text-sm"
+              >
+                🎨 NFT Receipts
               </button>
               <RoleBasedNavigation />
               <ConnectButton />
@@ -538,6 +546,13 @@ export default function ClientDashboard() {
         userRole="client"
         isOpen={showStatusTracker}
         onClose={() => setShowStatusTracker(false)}
+      />
+      
+      {/* NFT Receipt Viewer Modal */}
+      <NFTReceiptViewer 
+        userRole="client"
+        isOpen={showNFTReceipts}
+        onClose={() => setShowNFTReceipts(false)}
       />
     </RoleBasedAccess>
   );

@@ -5,6 +5,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface IInvoiceNFT {
+    function mintReceipt(
+        uint256 _invoiceId,
+        address _issuer,
+        address _client,
+        uint256 _amount,
+        string memory _description
+    ) external returns (uint256);
+}
+
 contract InvoiceManager is Ownable, ReentrancyGuard {
     enum InvoiceStatus { Created, Paid, Cancelled, Disputed }
     
@@ -45,9 +55,11 @@ contract InvoiceManager is Ownable, ReentrancyGuard {
     uint256 public nextInvoiceId = 1;
     uint256 public platformFeePercentage = 250; // 2.5%
     address public feeRecipient;
+    IInvoiceNFT public invoiceNFT;
     
     event InvoiceCreated(uint256 indexed invoiceId, address indexed issuer, address indexed client, uint256 amount, uint256 dueDate, string description);
     event InvoicePaid(uint256 indexed invoiceId, address indexed payer, uint256 amount);
+    event ReceiptMinted(uint256 indexed invoiceId, uint256 indexed tokenId, address indexed client);
     event InvoiceCancelled(uint256 indexed invoiceId);
     event EscrowActivated(uint256 indexed invoiceId, uint256 amount);
     event MilestoneCompleted(uint256 indexed invoiceId, uint256 milestoneIndex);
@@ -156,6 +168,22 @@ contract InvoiceManager is Ownable, ReentrancyGuard {
         invoice.amountPaid += amountToPay;
         invoice.status = InvoiceStatus.Paid;
         
+        // Mint NFT receipt if invoice is fully paid and NFT contract is set
+        if (invoice.amountPaid >= invoice.amount && address(invoiceNFT) != address(0)) {
+            try invoiceNFT.mintReceipt(
+                invoiceId,
+                invoice.issuer,
+                invoice.client,
+                invoice.amount,
+                invoice.description
+            ) returns (uint256 tokenId) {
+                emit ReceiptMinted(invoiceId, tokenId, invoice.client);
+            } catch {
+                // NFT minting failed, but payment still succeeded
+                // This ensures payment isn't reverted due to NFT issues
+            }
+        }
+        
         emit InvoicePaid(invoiceId, msg.sender, amountToPay);
     }
     
@@ -246,6 +274,11 @@ contract InvoiceManager is Ownable, ReentrancyGuard {
     function setFeeRecipient(address newFeeRecipient) external onlyOwner {
         require(newFeeRecipient != address(0), "Invalid fee recipient");
         feeRecipient = newFeeRecipient;
+    }
+    
+    function setInvoiceNFT(address nftContractAddress) external onlyOwner {
+        require(nftContractAddress != address(0), "Invalid NFT contract address");
+        invoiceNFT = IInvoiceNFT(nftContractAddress);
     }
     
     function emergencyWithdraw(address tokenAddress) external onlyOwner {

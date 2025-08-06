@@ -45,9 +45,51 @@ export default function FeeMRevenuePage() {
     );
   }
 
-  return (
-    <RoleBasedAccess allowedRoles={['business']}>
+  // Check if current user is the project owner
+  const isProjectOwner = isClient && address && projectOwnerAddress && 
+    address.toLowerCase() === projectOwnerAddress.toLowerCase();
+
+  // If not project owner, show access denied
+  if (isClient && !isProjectOwner) {
+    return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-3">
+              <FreyaLogo className="w-8 h-8" />
+            </div>
+            <div className="flex items-center space-x-4">
+              <RoleBasedNavigation />
+              <ConnectButton />
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="bg-red-500/10 backdrop-blur-xl rounded-2xl p-8 border border-red-500/20 text-center max-w-md">
+              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-white mb-2">Access Denied</h2>
+              <p className="text-white/60 mb-4">
+                Only the project owner can access the FeeM revenue dashboard.
+              </p>
+              <p className="text-red-300 text-sm font-mono bg-red-500/10 rounded px-3 py-2 mb-4">
+                Project Owner: {projectOwnerAddress ? `${projectOwnerAddress.slice(0, 6)}...${projectOwnerAddress.slice(-4)}` : 'Not Set'}
+              </p>
+              <p className="text-gray-400 text-sm">
+                Your Address: {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not Connected'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
@@ -194,6 +236,5 @@ export default function FeeMRevenuePage() {
           onClose={() => setShowFeeMDashboard(false)}
         />
       </div>
-    </RoleBasedAccess>
   );
 }

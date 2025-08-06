@@ -27,10 +27,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/analytics.js"
     ],
-    "/client-dashboard": [
+    "/dashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/client-dashboard.js"
+      "static/chunks/pages/dashboard.js"
+    ],
+    "/feem-revenue": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/feem-revenue.js"
     ]
   },
   "ampFirstPages": []

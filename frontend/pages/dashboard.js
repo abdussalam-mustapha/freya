@@ -4,9 +4,13 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
+import PaymentProcessor from '../components/PaymentProcessor';
+import DisputeManager from '../components/DisputeManager';
+import FeeMIntegration from '../components/FeeMIntegration';
+import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
+import RoleBasedAccess from '../components/RoleBasedAccess';
 import FreyaLogo from '../components/FreyaLogo';
 import RoleBasedNavigation from '../components/RoleBasedNavigation';
-import RoleBasedAccess from '../components/RoleBasedAccess';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 console.log('🔍 Dashboard using contract address:', INVOICE_MANAGER_ADDRESS);
@@ -117,6 +121,7 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [contractError, setContractError] = useState(null);
+  const [showStatusTracker, setShowStatusTracker] = useState(false);
 
   // Test if contract exists by calling a simple function
   const { data: contractNextInvoiceId, isError: contractTestError, error: contractTestErrorDetails } = useContractRead({
@@ -605,6 +610,12 @@ export default function Dashboard() {
                 <Link href="/analytics" className="block w-full bg-white/10 text-white px-4 py-3 rounded-xl font-medium hover:bg-white/20 transition-all text-center">
                   View Analytics
                 </Link>
+                <button 
+                  onClick={() => setShowStatusTracker(true)}
+                  className="block w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-3 rounded-xl font-medium hover:from-green-600 hover:to-emerald-600 transition-all text-center"
+                >
+                  📊 Status Tracking & History
+                </button>
               </div>
             </div>
 
@@ -643,6 +654,13 @@ export default function Dashboard() {
         </div>
         </div>
       </div>
+      
+      {/* Status Tracker Modal */}
+      <InvoiceStatusTracker 
+        userRole="business"
+        isOpen={showStatusTracker}
+        onClose={() => setShowStatusTracker(false)}
+      />
     </RoleBasedAccess>
   );
 }

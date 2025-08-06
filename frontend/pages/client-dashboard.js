@@ -9,6 +9,7 @@ import RoleBasedAccess from '../components/RoleBasedAccess';
 import PaymentProcessor from '../components/PaymentProcessor';
 import DisputeManager from '../components/DisputeManager';
 import FeeMRevenueDashboard from '../components/FeeMIntegration';
+import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -118,6 +119,7 @@ export default function ClientDashboard() {
   const [showPaymentProcessor, setShowPaymentProcessor] = useState(false);
   const [showDisputeManager, setShowDisputeManager] = useState(false);
   const [showFeeMDashboard, setShowFeeMDashboard] = useState(false);
+  const [showStatusTracker, setShowStatusTracker] = useState(false);
 
   // Get client's invoice IDs
   const { data: clientInvoiceIds, isError: clientInvoicesError, refetch: refetchClientInvoices } = useContractRead({
@@ -288,6 +290,12 @@ export default function ClientDashboard() {
 
             </div>
             <div className="flex items-center space-x-4">
+              <button 
+                onClick={() => setShowStatusTracker(true)}
+                className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-medium hover:from-green-600 hover:to-emerald-600 transition-all text-sm"
+              >
+                📊 Payment History
+              </button>
               <RoleBasedNavigation />
               <ConnectButton />
             </div>
@@ -523,6 +531,13 @@ export default function ClientDashboard() {
       <FeeMRevenueDashboard
         isOpen={showFeeMDashboard}
         onClose={() => setShowFeeMDashboard(false)}
+      />
+      
+      {/* Status Tracker Modal */}
+      <InvoiceStatusTracker 
+        userRole="client"
+        isOpen={showStatusTracker}
+        onClose={() => setShowStatusTracker(false)}
       />
     </RoleBasedAccess>
   );

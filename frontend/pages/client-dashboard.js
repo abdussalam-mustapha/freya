@@ -11,6 +11,7 @@ import DisputeManager from '../components/DisputeManager';
 import FeeMRevenueDashboard from '../components/FeeMIntegration';
 import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
 import NFTReceiptViewer from '../components/NFTReceiptViewer';
+import ComplianceExporter from '../components/ComplianceExporter';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -122,6 +123,7 @@ export default function ClientDashboard() {
   const [showFeeMDashboard, setShowFeeMDashboard] = useState(false);
   const [showStatusTracker, setShowStatusTracker] = useState(false);
   const [showNFTReceipts, setShowNFTReceipts] = useState(false);
+  const [showComplianceExporter, setShowComplianceExporter] = useState(false);
 
   // Get client's invoice IDs
   const { data: clientInvoiceIds, isError: clientInvoicesError, refetch: refetchClientInvoices } = useContractRead({
@@ -303,6 +305,12 @@ export default function ClientDashboard() {
                 className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all text-sm"
               >
                 🎨 NFT Receipts
+              </button>
+              <button 
+                onClick={() => setShowComplianceExporter(true)}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-medium hover:from-orange-600 hover:to-red-600 transition-all text-sm"
+              >
+                📊 Export Report
               </button>
               <RoleBasedNavigation />
               <ConnectButton />
@@ -553,6 +561,13 @@ export default function ClientDashboard() {
         userRole="client"
         isOpen={showNFTReceipts}
         onClose={() => setShowNFTReceipts(false)}
+      />
+      
+      {/* Compliance Exporter Modal */}
+      <ComplianceExporter 
+        userRole="client"
+        isOpen={showComplianceExporter}
+        onClose={() => setShowComplianceExporter(false)}
       />
     </RoleBasedAccess>
   );

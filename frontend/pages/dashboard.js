@@ -9,6 +9,7 @@ import DisputeManager from '../components/DisputeManager';
 import FeeMIntegration from '../components/FeeMIntegration';
 import InvoiceStatusTracker from '../components/InvoiceStatusTracker';
 import NFTReceiptViewer from '../components/NFTReceiptViewer';
+import ComplianceExporter from '../components/ComplianceExporter';
 import RoleBasedAccess from '../components/RoleBasedAccess';
 import FreyaLogo from '../components/FreyaLogo';
 import RoleBasedNavigation from '../components/RoleBasedNavigation';
@@ -124,6 +125,7 @@ export default function Dashboard() {
   const [contractError, setContractError] = useState(null);
   const [showStatusTracker, setShowStatusTracker] = useState(false);
   const [showNFTReceipts, setShowNFTReceipts] = useState(false);
+  const [showComplianceExporter, setShowComplianceExporter] = useState(false);
 
   // Test if contract exists by calling a simple function
   const { data: contractNextInvoiceId, isError: contractTestError, error: contractTestErrorDetails } = useContractRead({
@@ -624,6 +626,12 @@ export default function Dashboard() {
                 >
                   🎨 NFT Receipt Collection
                 </button>
+                <button 
+                  onClick={() => setShowComplianceExporter(true)}
+                  className="block w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all text-center"
+                >
+                  📊 Export Compliance Report
+                </button>
               </div>
             </div>
 
@@ -675,6 +683,13 @@ export default function Dashboard() {
         userRole="business"
         isOpen={showNFTReceipts}
         onClose={() => setShowNFTReceipts(false)}
+      />
+      
+      {/* Compliance Exporter Modal */}
+      <ComplianceExporter 
+        userRole="business"
+        isOpen={showComplianceExporter}
+        onClose={() => setShowComplianceExporter(false)}
       />
     </RoleBasedAccess>
   );

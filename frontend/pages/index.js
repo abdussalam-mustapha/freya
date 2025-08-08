@@ -598,7 +598,7 @@ export default function Home() {
               </div>
             </div>
             <div className="mt-8 text-center text-white/40 text-sm">
-              <p>&copy; 2024 Freya. All rights reserved. Built for Sonic S Tier University Edition Hackathon.</p>
+              <p>&copy; 2025 Freya. All rights reserved. Built for Sonic S Tier University Edition Hackathon.</p>
             </div>
           </div>
         </div>

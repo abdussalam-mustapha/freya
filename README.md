@@ -1,4 +1,4 @@
-# Sonic Invoice Portal 🚀
+# Freya 🚀
 
 **B2B DeFi Invoicing Platform on Sonic Blockchain**
 

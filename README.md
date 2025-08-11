@@ -2,7 +2,7 @@
 
 **B2B DeFi Invoicing Platform on Sonic Blockchain**
 
-Sonic Invoice Portal is a decentralized invoicing platform built for freelancers, startups, and B2B transactions on the Sonic blockchain. The platform leverages Sonic's FeeM infrastructure for micro-fee, high-speed financial interactions with optional escrow and milestone payment support.
+Sonic Invoice Portal is a decentralized invoicing platform built for freelancers, startups, and B2B transactions on the Sonic blockchain. The platform leverages Sonic's FeeM infrastructure for 90% revenue on transaction for developers, high-speed financial interactions with optional escrow and milestone payment support.
 
 ![Sonic Logo](https://img.shields.io/badge/Sonic-Invoice%20Portal-blue?style=for-the-badge&logo=ethereum)
 

@@ -218,7 +218,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✅ Real-time status tracking and payment history
 - ✅ NFT-based soulbound invoice receipts
 - ✅ Comprehensive compliance reporting (CSV/JSON export)
-- ✅ FeeM micro-gas optimization for reduced transaction costs
+- ✅ FeeM integration for developer revenue
 - ✅ Role-based access control (Business Owner vs Client dashboards)
 - ✅ Payment and dispute management system
 - ✅ Live blockchain data integration
@@ -268,7 +268,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   - **Milestone payments:** Partial payments for milestone-based invoices
   - **Initiate dispute:** Triggers `disputeInvoice()` with structured reasons
 - **Payment features:**
-  - FeeM micro-gas optimization for reduced transaction costs
+  - FeeM integration for developer revenue
   - Balance validation and user-friendly error handling
   - Real-time transaction status updates
 

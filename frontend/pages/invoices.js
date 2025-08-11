@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import FreyaLogo from '../components/FreyaLogo';
 import NotificationSystem from '../components/NotificationSystem';
+import InvoiceViewer from '../components/InvoiceViewer';
 
 const INVOICE_MANAGER_ADDRESS = process.env.NEXT_PUBLIC_INVOICE_MANAGER_ADDRESS;
 const INVOICE_MANAGER_ABI = [
@@ -75,6 +76,8 @@ export default function Invoices() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [sortBy, setSortBy] = useState('newest');
   const [loading, setLoading] = useState(true);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [showInvoiceViewer, setShowInvoiceViewer] = useState(false);
 
   // Get user's invoice IDs with refetch capability
   const { data: userInvoiceIds, isError: userInvoicesError, refetch: refetchUserInvoices } = useContractRead({
@@ -188,6 +191,23 @@ export default function Invoices() {
     }
   }, [invoicesData, userInvoiceIds, userInvoicesError]);
 
+  // Refresh data when navigating to invoices page
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (isConnected && address) {
+        setTimeout(() => {
+          refetchUserInvoices?.();
+        }, 100);
+      }
+    };
+    
+    router.events.on('routeChangeComplete', handleRouteChange);
+    
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [isConnected, address, refetchUserInvoices, router.events]);
+
   // Filter and search functionality
   useEffect(() => {
     let filtered = invoices;
@@ -226,6 +246,19 @@ export default function Invoices() {
 
     setFilteredInvoices(filtered);
   }, [invoices, searchTerm, statusFilter, sortBy]);
+
+  // Handler for viewing invoice details
+  const handleViewInvoice = (invoice) => {
+    console.log('handleViewInvoice called with:', invoice);
+    setSelectedInvoice(invoice);
+    setShowInvoiceViewer(true);
+  };
+
+  // Handler for closing invoice viewer
+  const handleCloseInvoiceViewer = () => {
+    setShowInvoiceViewer(false);
+    setSelectedInvoice(null);
+  };
 
   if (!mounted) {
     return null;
@@ -455,7 +488,11 @@ export default function Invoices() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-2">
-                          <button className="text-blue-400 hover:text-blue-300 transition-colors">
+                          <button 
+                            onClick={() => handleViewInvoice(invoice)}
+                            className="text-blue-400 hover:text-blue-300 transition-colors"
+                            title="View Invoice Details"
+                          >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -509,6 +546,15 @@ export default function Invoices() {
           </div>
         )}
       </div>
+
+      {/* Invoice Viewer Modal */}
+      {showInvoiceViewer && selectedInvoice && (
+        <InvoiceViewer
+          invoice={selectedInvoice}
+          isOpen={showInvoiceViewer}
+          onClose={handleCloseInvoiceViewer}
+        />
+      )}
     </div>
   );
 }

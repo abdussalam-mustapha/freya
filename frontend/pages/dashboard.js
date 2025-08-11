@@ -258,9 +258,24 @@ export default function Dashboard() {
       }
     };
     
+    const handleRouteChange = () => {
+      if (isConnected && address) {
+        // Refresh data when navigating to dashboard
+        setTimeout(() => {
+          refetchUserInvoices?.();
+          refetchInvoices?.();
+        }, 100);
+      }
+    };
+    
     window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
-  }, [isConnected, address, refetchUserInvoices]);
+    router.events.on('routeChangeComplete', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [isConnected, address, refetchUserInvoices, refetchInvoices, router.events]);
 
   // Refetch invoice details when userInvoiceIds change
   useEffect(() => {
@@ -384,7 +399,11 @@ export default function Dashboard() {
             <p className="text-white/60 text-xs mt-2">Contract: {INVOICE_MANAGER_ADDRESS}</p>
           </div>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => {
+              // Refetch contract data instead of full page reload
+              refetchUserInvoices?.();
+              refetchInvoices?.();
+            }} 
             className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
           >
             Retry

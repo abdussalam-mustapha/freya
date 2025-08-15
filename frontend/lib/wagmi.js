@@ -3,24 +3,24 @@ import { publicProvider } from 'wagmi/providers/public';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 import { injectedWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
 
-// Define Sonic testnet without ENS contracts
-const sonicTestnet = {
-  id: 57054,
-  name: 'Sonic Testnet',
-  network: 'sonic-testnet',
+// Define Sonic mainnet without ENS contracts
+const sonicMainnet = {
+  id: 146,
+  name: 'Sonic Mainnet',
+  network: 'sonic-mainnet',
   nativeCurrency: {
     decimals: 18,
     name: 'Sonic',
     symbol: 'S',
   },
   rpcUrls: {
-    public: { http: ['https://rpc.blaze.soniclabs.com'] },
-    default: { http: ['https://rpc.blaze.soniclabs.com'] },
+    public: { http: ['https://rpc.soniclabs.com'] },
+    default: { http: ['https://rpc.soniclabs.com'] },
   },
   blockExplorers: {
-    default: { name: 'SonicScan Testnet', url: 'https://testnet.sonicscan.org' },
+    default: { name: 'SonicScan', url: 'https://sonicscan.org' },
   },
-  testnet: true,
+  testnet: false,
   // Explicitly disable ENS contracts
   contracts: {
     ensRegistry: undefined,
@@ -29,9 +29,9 @@ const sonicTestnet = {
   },
 };
 
-// Configure chains with only Sonic testnet to avoid ENS issues
+// Configure chains with only Sonic mainnet to avoid ENS issues
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [sonicTestnet],
+  [sonicMainnet],
   [publicProvider()],
   {
     pollingInterval: 4000,

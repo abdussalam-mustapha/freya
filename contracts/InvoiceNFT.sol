@@ -46,7 +46,9 @@ contract InvoiceNFT is ERC721, ERC721URIStorage, Ownable {
         uint256 amount
     );
     
-    constructor() ERC721("Freya Invoice Receipt", "FIR") {}
+    constructor() ERC721("Freya Invoice Receipt", "FIR") {
+        // Ownable automatically sets msg.sender as owner in v4.9.3
+    }
     
     /**
      * @dev Mint a soulbound NFT receipt for a completed invoice

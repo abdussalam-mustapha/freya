@@ -6,9 +6,9 @@ async function main() {
   const [deployer] = await hre.ethers.getSigners();
   console.log("📝 Using account:", deployer.address);
 
-  // Contract addresses
-  const INVOICE_MANAGER_ADDRESS = "0xfC91C84f52c33fc4073Dc951d15868a7d650EA6E";
-  const INVOICE_NFT_ADDRESS = "0x2f4DED1c6aef0865bc3eF4Ad133B21593E72A499";
+  // Contract addresses - MAINNET DEPLOYMENT
+  const INVOICE_MANAGER_ADDRESS = "0x90315a0d95aDDc5705A641b334EAEa31d7D87FB7";
+  const INVOICE_NFT_ADDRESS = "0xCecD9d0D29933518ea4Ad90f7d788D326A96B97E";
   
   // Get contract instances
   const InvoiceManager = await hre.ethers.getContractFactory("InvoiceManager");
@@ -28,10 +28,17 @@ async function main() {
     const nftOwner = await invoiceNFT.owner();
     console.log("📋 InvoiceNFT owner:", nftOwner);
     
+    // Get current gas price for mainnet transactions
+    const gasPrice = await hre.ethers.provider.getFeeData();
+    console.log(`Current gas price: ${gasPrice.gasPrice} wei`);
+    
     // Step 3: Set NFT contract address in InvoiceManager (only if deployer is owner)
     if (managerOwner.toLowerCase() === deployer.address.toLowerCase()) {
       console.log("🔧 Setting NFT contract address in InvoiceManager...");
-      const setTx = await invoiceManager.setInvoiceNFT(INVOICE_NFT_ADDRESS);
+      const setTx = await invoiceManager.setInvoiceNFT(INVOICE_NFT_ADDRESS, {
+        gasPrice: gasPrice.gasPrice ? gasPrice.gasPrice * 2n : undefined,
+        gasLimit: 200000
+      });
       await setTx.wait();
       console.log("✅ NFT contract address set successfully!");
       console.log("📋 Transaction hash:", setTx.hash);
@@ -46,7 +53,10 @@ async function main() {
     // Step 4: Transfer NFT contract ownership to InvoiceManager (only if deployer is NFT owner)
     if (nftOwner.toLowerCase() === deployer.address.toLowerCase()) {
       console.log("🔧 Transferring NFT contract ownership to InvoiceManager...");
-      const transferTx = await invoiceNFT.transferOwnership(INVOICE_MANAGER_ADDRESS);
+      const transferTx = await invoiceNFT.transferOwnership(INVOICE_MANAGER_ADDRESS, {
+        gasPrice: gasPrice.gasPrice ? gasPrice.gasPrice * 2n : undefined,
+        gasLimit: 100000
+      });
       await transferTx.wait();
       console.log("✅ NFT contract ownership transferred successfully!");
       console.log("📋 Transaction hash:", transferTx.hash);

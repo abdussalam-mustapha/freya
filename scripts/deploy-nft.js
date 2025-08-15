@@ -6,8 +6,15 @@ async function main() {
   // Get the contract factory
   const InvoiceNFT = await ethers.getContractFactory("InvoiceNFT");
 
-  // Deploy the contract
-  const invoiceNFT = await InvoiceNFT.deploy();
+  // Get current gas price and add buffer for mainnet
+  const gasPrice = await ethers.provider.getFeeData();
+  console.log(`Current gas price: ${gasPrice.gasPrice} wei`);
+
+  // Deploy the contract with proper gas settings
+  const invoiceNFT = await InvoiceNFT.deploy({
+    gasPrice: gasPrice.gasPrice ? gasPrice.gasPrice * 2n : undefined, // Double the gas price
+    gasLimit: 3000000 // Set explicit gas limit
+  });
   await invoiceNFT.waitForDeployment();
   
   const invoiceNFTAddress = await invoiceNFT.getAddress();

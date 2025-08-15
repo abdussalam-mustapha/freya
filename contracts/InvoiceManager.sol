@@ -68,6 +68,7 @@ contract InvoiceManager is Ownable, ReentrancyGuard {
     
     constructor() {
         feeRecipient = msg.sender;
+        // Ownable automatically sets msg.sender as owner in v4.9.3
     }
     
     modifier onlyInvoiceParties(uint256 invoiceId) {

@@ -22,6 +22,7 @@ Sonic Invoice Portal is a decentralized invoicing platform built for freelancers
 - **💎 Multi-token Support**: Support for native Sonic tokens and ERC-20 tokens
 - **📈 Dashboard Analytics**: Comprehensive invoice management dashboard
 - **🔔 Event Notifications**: Real-time blockchain event tracking
+- **⚡ AI integration**: Seamless AI co-pilot integration
 
 ## 🏗️ Architecture
 
@@ -178,11 +179,11 @@ npm run deploy:local
 
 ## 🌐 Deployment
 
-### Sonic Testnet
-- **Network**: Sonic Testnet
-- **Chain ID**: 57054
-- **RPC**: https://rpc.blaze.soniclabs.com
-- **Explorer**: https://testnet.sonicscan.org
+### Sonic Mainnet
+- **Network**: Sonic
+- **Chain ID**: 146
+- **RPC**: https://rpc.soniclabs.com
+- **Explorer**: https://sonicscan.org
 
 ### Contract Addresses
 - **InvoiceManager**: `0xae5DdF3ac3dfD629d1C5Ad1Cc6AF1B741b0405fe`
@@ -314,6 +315,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Split Payments:** Multiple contributors (DAO wallets or partner wallets) can fund invoices
 - **Cross-Chain Mirror:** Invoice status replication to Ethereum/Solana when bridged
 - **ZK Privacy Toggle:** Hide sensitive amounts while maintaining auditability
+- **AI integration:** Seamless AI integration fr workflows
 
 ## 🏆 Hackathon Submission
 
@@ -329,6 +331,8 @@ Freya demonstrates the power of decentralized finance (DeFi) applied to everyday
 - **Scalable design**: Built for growth and adoption
 
 ---
+
+**GITBOOK Documentation** : https://app.gitbook.com/invite/bxxldCTPziUP6Vxr9qCI/0r5lQnSlWfv2yGnS3HvE
 
 **Built for Sonic S Tier University Edition Hackathon**
 

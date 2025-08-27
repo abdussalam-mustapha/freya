@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import Link from 'next/link';
 import FreyaLogo from '../components/FreyaLogo';
+import SonicLogo from "../../frontend/assets/soniclogo.png";
+import Image from 'next/image';
 
 export default function Home() {
   const { isConnected } = useAccount();
@@ -23,7 +25,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <FreyaLogo size="sm" showText={false} />
+              <FreyaLogo size="xl" showText={false} />
 
             </div>
             <div className="flex items-center space-x-4">
@@ -590,10 +592,9 @@ export default function Home() {
               <div className="flex items-center space-x-4 text-white/50 text-sm">
                 <span>Built on</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-xs">S</span>
-                  </div>
-                  <span className="font-medium">Sonic Blockchain</span>
+                  {/* <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center"> */}
+                    <Image src={SonicLogo} alt="Sonic Logo" className="w-24 h-12" />
+                  {/* </div> */}
                 </div>
               </div>
             </div>

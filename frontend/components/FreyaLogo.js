@@ -29,7 +29,7 @@ const FreyaLogo = ({ size = 'md', showText = true, className = '' }) => {
         />
       </div>
       
-      {/* Freya Text */}
+      {/* Freya Text
       {showText && (
         <div className="flex flex-col">
           <span className={`font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent ${textSizeClasses[size]}`}>
@@ -39,7 +39,7 @@ const FreyaLogo = ({ size = 'md', showText = true, className = '' }) => {
             <span className="text-sm text-gray-500 -mt-1 font-medium tracking-wide">Invoice Portal</span>
           ) : null}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

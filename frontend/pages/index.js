@@ -77,14 +77,14 @@ export default function Home() {
             
             <FreyaLogo size="xl" showText={true} className="justify-center mb-12" />
             
-            <h1 className="text-6xl lg:text-8xl font-black text-white mb-8 leading-tight">
+            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-8 leading-tight">
               The Future of
               <span className="block bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
                 B2B Invoicing
               </span>
             </h1>
             
-            <p className="text-xl lg:text-2xl text-white/70 mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/70 mb-12 max-w-4xl mx-auto leading-relaxed">
               Create, manage, and pay invoices with blockchain security. Built-in escrow protection, 
               milestone payments, and lightning-fast transactions on Sonic.
             </p>
@@ -151,13 +151,13 @@ export default function Home() {
               <FreyaLogo size="sm" showText={false} className="mr-2" />
               Platform Features
             </div>
-            <h2 className="text-5xl lg:text-6xl font-black text-white mb-6">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
               Everything You Need for
               <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 Professional Invoicing
               </span>
             </h2>
-            <p className="text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
               Built on Sonic blockchain with enterprise-grade security and lightning-fast performance
             </p>
           </div>
@@ -284,11 +284,11 @@ export default function Home() {
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-6">
             <span className="text-violet-400 text-sm font-medium">📊 Platform Impact</span>
           </div>
-          <h2 className="text-5xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6 leading-tight">
             Trusted by
             <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent"> Global Leaders</span>
           </h2>
-          <p className="text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
             Join thousands of businesses transforming their invoicing with blockchain technology
           </p>
           </div>
@@ -411,12 +411,12 @@ export default function Home() {
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6">
               <span className="text-indigo-400 text-sm font-medium">🚀 Simple Process</span>
             </div>
-            <h2 className="text-5xl font-bold text-white mb-6 leading-tight">
+            <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6 leading-tight">
               How Freya
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"> Simplifies</span>
               <br />Your Workflow
             </h2>
-            <p className="text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
               From creation to payment, experience the most streamlined invoice management process
             </p>
           </div>
